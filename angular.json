@@ -7,7 +7,9 @@
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
-          "style": "sass"
+          "style": "sass",
+          "standalone": true,
+          "changeDetection": "OnPush"
         }
       },
       "root": "",
