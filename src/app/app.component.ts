@@ -4,11 +4,12 @@ import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { EstimateActions } from './app.store';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, MatSlideToggleModule],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.sass']
 })

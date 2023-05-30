@@ -7,13 +7,15 @@ import { appReducer } from './app.store';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
 import { provideEffects } from '@ngrx/effects';
 import * as AppEffects from './app.effects';
+import { provideAnimations } from '@angular/platform-browser/animations';
 
 export const AppConfig: ApplicationConfig = {
     providers: [
-        provideRouter(routes, withComponentInputBinding()),
-        provideHttpClient(),
-        provideStore({ app: appReducer }),
-        provideEffects(AppEffects),
-        provideStoreDevtools(),
-    ],
+    provideRouter(routes, withComponentInputBinding()),
+    provideHttpClient(),
+    provideStore({ app: appReducer }),
+    provideEffects(AppEffects),
+    provideStoreDevtools(),
+    provideAnimations()
+],
 };
