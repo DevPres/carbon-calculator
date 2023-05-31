@@ -10,9 +10,6 @@ import {MatButtonModule} from '@angular/material/button';
   imports: [CommonModule,  MatButtonModule, MatIconModule],
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.scss'],
-  host: {
-    class: 'sidebar-content'
-  },
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SidebarComponent {}

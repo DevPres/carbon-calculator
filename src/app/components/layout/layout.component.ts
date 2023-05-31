@@ -25,6 +25,12 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
 
       .mat-drawer {
         width: 100%;
+        background-color: var(--color-accent-light);
+        border-right: 1px solid var(--color-primary);
+      }
+
+      .mat-drawer-content {
+        background-color: transparent;
       }
     }
 
