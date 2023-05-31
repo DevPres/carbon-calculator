@@ -30,7 +30,7 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
       }
 
       .mat-drawer-content {
-        background-color: transparent;
+        background-color: var(--color-accent-dark);
       }
     }
 
