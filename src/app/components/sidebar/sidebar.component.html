@@ -1,4 +1,9 @@
 <div class="sidebar-content">
+  <div class="estimates-list">
+    <ng-container *ngFor="let estimate of estimates()">
+      <app-estimate-preview [estimate]="estimate"></app-estimate-preview>
+    </ng-container>
+  </div>
   <div class="sidebar-cta">
     <p class="sidebar-cta-title">Crea una nuova stima delle tue emissioni!</p>
 
