@@ -1,8 +1,38 @@
 /* You can add global styles to this file, and also import other style files */
+/* variables.scss */
+@use '@angular/material' as mat;
+
+@import './theming';
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,400;0,700;1,300&display=swap');
+
+
+$primary: mat.get-color-from-palette($my-primary, 500);
+$primary-light: mat.get-color-from-palette($my-primary, 100);
+$primary-dark: mat.get-color-from-palette($my-primary, 700);
+$accent: mat.get-color-from-palette($my-accent, 500);
+$accent-light: mat.get-color-from-palette($my-accent, 100);
+$accent-dark: mat.get-color-from-palette($my-accent, 700);
+$warn: mat.get-color-from-palette($my-warn, 500);
+$success: mat.get-color-from-palette($my-success, 500);
+
+:root {
+  --color-primary: #{$primary};
+  --color-primary-light: #{$primary-light};
+  --color-primary-dark: #{$primary-dark};
+  --color-accent: #{$accent};
+  --color-accent-light: #{$accent-light};
+  --color-accent-dark: #{$accent-dark};
+  --color-warn: #{$warn};
+  --color-success: #{$success};
+  --color-text: #333;
+}
 
 html,body {
   padding: 0;
   margin: 0;
   font-family: 'Roboto', sans-serif;
+}
+
+body {
+  background-color: var(--color-accent-dark);
 }
