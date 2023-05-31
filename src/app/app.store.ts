@@ -1,3 +1,4 @@
+import { Observable } from "rxjs";
 import { Estimate } from "./interfaces/estimate.interface";
 import { createActionGroup, createReducer, createSelector, on, props } from '@ngrx/store';
 
@@ -7,24 +8,8 @@ export interface AppState {
 
 
 
-export const initialState: AppState = {
-  estimates: [],
-};
+export const initialState: Estimate[] = [];
 
-
-
-export const appReducer = createReducer(
-  initialState,
-);
-
-
-
-export const selectApp = (state: AppState) => state;
-
-export const selectEstimates = createSelector(
-  selectApp,
-  (state: AppState) => state.estimates
-);
 
 export const EstimateActions = createActionGroup({
   source: '[Home Page]',
@@ -33,3 +18,21 @@ export const EstimateActions = createActionGroup({
     'Removing Estimate': props<{ id: number }>(),
   },
 });
+
+export const estimateReducer = createReducer(
+  initialState,
+  on(EstimateActions.addingEstimate, (state, { estimate }) => ({
+    ...state,
+    estimates: [...state, estimate],
+  })),
+);
+
+
+
+export const selectApp = (state: AppState) => state;
+
+export const selectEstimates = createSelector(
+  selectApp,
+  (state: AppState) => {console.log(state); return state.estimates}
+);
+
