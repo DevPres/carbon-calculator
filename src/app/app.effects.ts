@@ -9,7 +9,6 @@ export const addEstimate = createEffect(
   ) => {
     return actions$.pipe(
       ofType(EstimateActions.addingEstimate),
-      tap((x) => console.log('x',x))
     );
   },
   { functional: true, dispatch: false }

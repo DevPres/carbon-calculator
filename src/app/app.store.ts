@@ -21,10 +21,9 @@ export const EstimateActions = createActionGroup({
 
 export const estimateReducer = createReducer(
   initialState,
-  on(EstimateActions.addingEstimate, (state, { estimate }) => ({
-    ...state,
-    estimates: [...state, estimate],
-  })),
+  on(EstimateActions.addingEstimate, (state, { estimate }) =>
+    [...state, estimate],
+  ),
 );
 
 
