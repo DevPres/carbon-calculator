@@ -11,16 +11,12 @@ import { LayoutComponent } from './components/layout/layout.component';
   selector: 'app-root',
   standalone: true,
   imports: [CommonModule, RouterModule, MatSlideToggleModule, LayoutComponent],
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  template: `
+    <app-layout>
+      <router-outlet></router-outlet>
+    </app-layout>
+  `,
 })
 export class AppComponent {
   title = 'carbon-calculator';
-
-  constructor(private store: Store) {}
-
-  ngOnInit() {
-    console.log(this.store);
-    this.store.dispatch(EstimateActions.addingEstimate({ estimate: { id: 1, name: 'test' } }));
-  }
 }
