@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Estimate } from 'src/app/interfaces/estimate.interface';
+import { Estimate } from 'src/app/interfaces/app.interface';
 import { MatCardModule } from '@angular/material/card';
 
 @Component({
