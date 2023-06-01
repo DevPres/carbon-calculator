@@ -1,0 +1,47 @@
+<div class="vehicles-estimate-form" [formGroup]="form">
+    <ng-container formArrayName="vehicles">
+        <ng-container *ngFor="let vehicle of vehicles.controls; let i = index">
+            <div class="vehicles-estimate-form-row" [formGroupName]="i">
+
+                <mat-form-field appearance="fill">
+                    <mat-select formControlName="vehicle_make" placeholder="Marca Veicolo">
+                        <ng-container *ngFor="let make of vehicleMakes()">
+                          <mat-option [value]="make.id">{{make.name}} ({{make.numberOfModels}})</mat-option>
+                        </ng-container>
+                    </mat-select>
+                </mat-form-field>
+
+                <mat-form-field appearance="fill">
+                    <mat-select formControlName="vehicle_model" placeholder="Modello veicolo ">
+
+                        <mat-option value="beginner">Beginner</mat-option>
+                        <mat-option value="intermediate">Intermediate</mat-option>
+                        <mat-option value="advanced">Advanced</mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+
+                <mat-form-field appearance="fill">
+                  <input matInput
+                     formControlName="distance_value"
+                     placeholder="Distanza percorsa">
+                </mat-form-field>
+
+
+              </div>
+        </ng-container>
+    </ng-container>
+
+    vehicle_make: new FormControl(vehicle.vehicle_make),
+            vehicle_model: new FormControl(vehicle.vehicle_model),
+            vehicle_year: new FormControl(vehicle.vehicle_year),
+            distance_value: new FormControl(vehicle.distance_value),
+            vehicle_model_id: new FormControl(vehicle.vehicle_model_id)
+
+    <!--
+      <button mat-mini-fab (click)="addLesson()">
+      <mat-icon class="add-course-btn">add</mat-icon>
+      </button>
+    -->
+
+</div>
