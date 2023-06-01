@@ -31,6 +31,8 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
 
       .mat-drawer-content {
         background-color: var(--color-accent-dark);
+        padding: 16px;
+        box-sizing: border-box;
       }
     }
 
