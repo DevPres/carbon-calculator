@@ -29,6 +29,7 @@ $success: mat.get-color-from-palette($my-success, 500);
 html,body {
   padding: 0;
   margin: 0;
+  box-sizing: border-box;
   font-family: 'Roboto', sans-serif;
 }
 
