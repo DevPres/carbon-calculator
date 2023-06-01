@@ -1,8 +1,13 @@
-<div class="sidebar-content">
-  <div class="estimates-list">
-    <ng-container *ngFor="let estimate of estimates()">
-      <app-estimate-preview [estimate]="estimate"></app-estimate-preview>
-    </ng-container>
+<div class="sidebar-content-container" [ngClass]="{'sidebar-open': sidebarOpen()}">
+  <div class="sidebar-content">
+    <div class="sidebar-content-toggle-row">
+      <mat-icon (click)="onCloseSidebar()">close</mat-icon>
+    </div>
+    <div class="sidebar-content-estimates-list">
+      <ng-container *ngFor="let estimate of estimates()">
+        <app-estimate-preview [estimate]="estimate"></app-estimate-preview>
+      </ng-container>
+    </div>
   </div>
   <div class="sidebar-cta">
     <p class="sidebar-cta-title">Crea una nuova stima delle tue emissioni!</p>
