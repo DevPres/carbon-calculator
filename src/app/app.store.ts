@@ -1,5 +1,5 @@
 import { Observable } from "rxjs";
-import { Estimate } from "./interfaces/estimate.interface";
+import { Estimate } from "./interfaces/app.interface";
 import { createActionGroup, createReducer, createSelector, on, props } from '@ngrx/store';
 
 export interface AppState {
