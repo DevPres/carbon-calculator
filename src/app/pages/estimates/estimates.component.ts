@@ -2,14 +2,14 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-calculator',
+  selector: 'app-estimates',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './calculator.component.html',
-  styleUrls: ['./calculator.component.scss'],
+  templateUrl: './estimates.component.html',
+  styleUrls: ['./estimates.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CalculatorComponent {
+export class EstimatesComponent {
   @Input() id?: string;
 
   ngOnInit() {
