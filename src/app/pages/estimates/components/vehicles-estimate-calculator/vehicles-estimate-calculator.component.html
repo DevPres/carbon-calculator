@@ -4,7 +4,7 @@
             <div class="vehicles-estimate-form-row" [formGroupName]="i">
 
                 <mat-form-field appearance="fill">
-                    <mat-select formControlName="vehicle_make" placeholder="Marca Veicolo">
+                    <mat-select formControlName="vehicle_make" (selectionChange)="onMakeSelected($event)" placeholder="Marca Veicolo">
                         <ng-container *ngFor="let make of vehicleMakes()">
                           <mat-option [value]="make.id">{{make.name}} ({{make.numberOfModels}})</mat-option>
                         </ng-container>

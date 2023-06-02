@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { Store } from '@ngrx/store';
-import { EstimateActions, selectEstimates } from 'src/app/app.store';
+import { AppActions, selectEstimates } from 'src/app/app.store';
 import { Observable } from 'rxjs';
 import { Estimate } from 'src/app/interfaces/app.interface';
 import { EstimatePreviewComponent } from './estimate-preview/estimate-preview.component';
@@ -25,8 +25,8 @@ export class SidebarComponent {
 
 
   ngOnInit(): void {
-    this.store.dispatch(EstimateActions.addingEstimate({ estimate: { id: 1, name: 'Estimate 1', description: 'Estimate 1 description' } }));
-    this.store.dispatch(EstimateActions.addingEstimate({ estimate: { id: 2, name: 'Estimate 2', description: 'Estimate 2 description' } }));
+    this.store.dispatch(AppActions.addingEstimate({ estimate: { id: 1, name: 'Estimate 1', description: 'Estimate 1 description' } }));
+    this.store.dispatch(AppActions.addingEstimate({ estimate: { id: 2, name: 'Estimate 2', description: 'Estimate 2 description' } }));
     console.log(this.estimates())
   }
 

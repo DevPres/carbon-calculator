@@ -3,7 +3,7 @@ import { Component, inject } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { EstimateActions } from './app.store';
+import { AppActions } from './app.store';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { LayoutComponent } from './components/layout/layout.component';
 

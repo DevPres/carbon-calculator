@@ -11,7 +11,7 @@ export interface AppState {
 export const initialState: Estimate[] = [];
 
 
-export const EstimateActions = createActionGroup({
+export const AppActions = createActionGroup({
   source: '[Home Page]',
   events: {
     'Adding Estimate': props<{ estimate: Estimate}>(),
@@ -19,9 +19,9 @@ export const EstimateActions = createActionGroup({
   },
 });
 
-export const estimateReducer = createReducer(
+export const appReducer = createReducer(
   initialState,
-  on(EstimateActions.addingEstimate, (state, { estimate }) =>
+  on(AppActions.addingEstimate, (state, { estimate }) =>
     [...state, estimate],
   ),
 );
@@ -32,6 +32,6 @@ export const selectApp = (state: AppState) => state;
 
 export const selectEstimates = createSelector(
   selectApp,
-  (state: AppState) => {console.log(state); return state.estimates}
+  (state: AppState) => state.estimates
 );
 

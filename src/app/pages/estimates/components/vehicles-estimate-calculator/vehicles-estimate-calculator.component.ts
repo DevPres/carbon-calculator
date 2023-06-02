@@ -5,10 +5,12 @@ import { VehicleEstimate } from 'src/app/interfaces/app.interface';
 import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input'
-import { MatSelectModule } from '@angular/material/select';
-import { EstimatesService } from '../../estimates.service';
+import { MatSelectChange, MatSelectModule } from '@angular/material/select';
+import { EstimatesApiService } from '../../estimates.service';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { tap } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { EstimateActions, estimateFeature } from '@pages/estimates/estimate.store';
 
 @Component({
   selector: 'app-vehicles-estimate-calculator',
@@ -31,12 +33,14 @@ export class VehiclesEstimateCalculatorComponent extends CalculatorComponent {
       return this.form.get('vehicles') as FormArray;
     }
 
-    private estimateService = inject(EstimatesService);
+    private store = inject(Store);
 
 
-    vehicleMakes = toSignal(this.estimateService.getVehicleMakes().pipe(tap(console.log)));
+    vehicleMakes = this.store.selectSignal(estimateFeature.selectVehicleMakes);
+
 
     ngOnInit(): void {
+      this.store.dispatch(EstimateActions.loadingVehicleMakes());
       if(this.estimate) {
         this.vehicles.clear();
         this.estimate.vehicles.forEach(vehicle => {
@@ -59,11 +63,17 @@ export class VehiclesEstimateCalculatorComponent extends CalculatorComponent {
           vehicle_model_id: new FormControl("")
         }))
       }
+
+      this.vehicles.valueChanges.subscribe(console.log);
     }
 
     public calculateEmissionEstimate(): void {
       this.emissionEstimate
       throw new Error('Method not implemented.');
+    }
+
+    onMakeSelected($ev: MatSelectChange): void {
+      let makeid = $ev.value
     }
 
 }

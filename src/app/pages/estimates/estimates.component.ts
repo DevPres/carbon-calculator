@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatCardModule } from '@angular/material/card';
 import { VehiclesEstimateCalculatorComponent } from './components/vehicles-estimate-calculator/vehicles-estimate-calculator.component';
-import { EstimatesService } from './estimates.service';
 
 
 @Component({
@@ -12,7 +11,6 @@ import { EstimatesService } from './estimates.service';
   imports: [CommonModule, MatTabsModule, MatCardModule, VehiclesEstimateCalculatorComponent],
   templateUrl: './estimates.component.html',
   styleUrls: ['./estimates.component.scss'],
-  providers: [EstimatesService],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EstimatesComponent {
