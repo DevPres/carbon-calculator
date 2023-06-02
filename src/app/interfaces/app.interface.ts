@@ -22,3 +22,10 @@ export interface VehicleMake {
   name: string;
   numberOfModels: number;
 }
+
+
+export interface VehicleModel {
+  id: string;
+  name: string;
+  year: number;
+}
