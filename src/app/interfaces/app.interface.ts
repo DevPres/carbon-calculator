@@ -1,4 +1,4 @@
-export interface Estimate {
+export interface TotalEstimate {
   id: number;
   name: string;
   description?: string;
@@ -14,6 +14,7 @@ export interface VehicleEstimate {
     vehicle_year: number;
     vehicle_model_id: string;
     distance_unit: string;
+    estimate: number;
   }[];
 }
 

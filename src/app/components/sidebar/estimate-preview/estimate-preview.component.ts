@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Estimate } from 'src/app/interfaces/app.interface';
+import { TotalEstimate } from 'src/app/interfaces/app.interface';
 import { MatCardModule } from '@angular/material/card';
 
 @Component({
@@ -12,5 +12,5 @@ import { MatCardModule } from '@angular/material/card';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EstimatePreviewComponent {
-  @Input() estimate!: Estimate;
+  @Input() estimate!: TotalEstimate;
 }

@@ -1,20 +1,20 @@
 import { Observable } from "rxjs";
-import { Estimate } from "./interfaces/app.interface";
+import { TotalEstimate } from "./interfaces/app.interface";
 import { createActionGroup, createReducer, createSelector, on, props } from '@ngrx/store';
 
 export interface AppState {
-  estimates: Estimate[];
+  estimates: TotalEstimate[];
 }
 
 
 
-export const initialState: Estimate[] = [];
+export const initialState: TotalEstimate[] = [];
 
 
 export const AppActions = createActionGroup({
   source: '[Home Page]',
   events: {
-    'Adding Estimate': props<{ estimate: Estimate}>(),
+    'Adding Estimate': props<{ estimate: TotalEstimate}>(),
     'Removing Estimate': props<{ id: number }>(),
   },
 });

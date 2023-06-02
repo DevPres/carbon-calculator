@@ -5,7 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { Store } from '@ngrx/store';
 import { AppActions, selectEstimates } from 'src/app/app.store';
 import { Observable } from 'rxjs';
-import { Estimate } from 'src/app/interfaces/app.interface';
+import { TotalEstimate } from 'src/app/interfaces/app.interface';
 import { EstimatePreviewComponent } from './estimate-preview/estimate-preview.component';
 
 @Component({
@@ -20,7 +20,7 @@ export class SidebarComponent {
   @Input() sidebarOpen!: WritableSignal<boolean>;
 
   private store = inject(Store);
-  public estimates: Signal<Estimate[]> = this.store.selectSignal(selectEstimates);
+  public estimates: Signal<TotalEstimate[]> = this.store.selectSignal(selectEstimates);
 
 
 
