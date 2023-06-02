@@ -80,7 +80,7 @@ export class VehiclesEstimateCalculatorComponent extends CalculatorComponent {
       }
 
       this.calculateVehicleEstimate$$.pipe(
-        tap((formIndex) => this.isCalculatingEstimate.set({calculating: true, index: formIndex})),
+        tap((formIndex) => this.isCalculatingEstimate.mutate(v=> {v.calculating = true; v.index = formIndex})),
         switchMap(formIndex => {
           let { type, distance_unit, distance_value, vehicle_model_id } = this.form.get('vehicles')?.get(formIndex.toString())?.value;
 
@@ -94,7 +94,7 @@ export class VehiclesEstimateCalculatorComponent extends CalculatorComponent {
             catchError(err => EMPTY),
             finalize(() =>
               setTimeout(() =>
-                     this.isCalculatingEstimate.set({calculating: false, index: null})
+                     this.isCalculatingEstimate.mutate(v => {v.calculating = false; v.index = null})
               ,1000)
             )
           )
@@ -107,11 +107,6 @@ export class VehiclesEstimateCalculatorComponent extends CalculatorComponent {
 
     ngAfterViewInit(): void {
 
-    }
-
-    public calculateEmissionEstimate(): void {
-      this.emissionEstimate
-      throw new Error('Method not implemented.');
     }
 
     onMakeSelected($ev: MatSelectChange, formIndex: number): void {

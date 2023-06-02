@@ -64,7 +64,7 @@ export class LayoutComponent {
   sidebarOpen = signal(true);
 
   onOpenSidebar(): void {
-    this.sidebarOpen.set(true);
+    this.sidebarOpen.update(v => true);
   }
 
 

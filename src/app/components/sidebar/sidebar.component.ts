@@ -31,7 +31,7 @@ export class SidebarComponent {
   }
 
   onCloseSidebar(): void {
-    this.sidebarOpen.set(false);
+    this.sidebarOpen.update(v => false);
   }
 
 }
