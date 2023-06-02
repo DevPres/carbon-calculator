@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input, WritableSignal, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CalculatorComponent } from '../calculator.abstract';
-import { VehicleEstimate } from 'src/app/interfaces/app.interface';
+import { CalculatorEnum, VehicleEstimate, VehiclesEstimate } from 'src/app/interfaces/app.interface';
 import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input'
@@ -29,7 +29,7 @@ import { MatButtonModule } from '@angular/material/button';
 })
 export class VehiclesEstimateCalculatorComponent extends CalculatorComponent {
 
-    @Input() estimate: VehicleEstimate | null = null
+    calculatorKey = CalculatorEnum.vehicles
 
     public form = new FormGroup({
       vehicles: new FormArray([])
@@ -39,7 +39,6 @@ export class VehiclesEstimateCalculatorComponent extends CalculatorComponent {
     get vehicles(): FormArray {
       return this.form.get('vehicles') as FormArray;
     }
-
     private store = inject(Store);
     private apiService = inject(EstimatesApiService);
 
@@ -54,19 +53,23 @@ export class VehiclesEstimateCalculatorComponent extends CalculatorComponent {
     vehicleModels = this.store.selectSignal(estimateFeature.selectVehicleModels);
 
 
-    ngOnInit(): void {
+    override ngOnInit(): void {
+      super.ngOnInit();
+
       this.store.dispatch(EstimateActions.loadingVehicleMakes());
-      if(this.estimate) {
+
+      if(this.estimate && this.estimate.type == this.calculatorKey) {
         this.vehicles.clear();
         this.estimate.vehicles.forEach(vehicle => {
           this.vehicles.push(new FormGroup({
             distance_unit: new FormControl("km"),
-            vehicle_make_id: new FormControl(vehicle.vehicle_make),
-            vehicle_model_id: new FormControl(vehicle.vehicle_model),
+            vehicle_make_id: new FormControl(vehicle.vehicle_make_id),
+            vehicle_model_id: new FormControl(vehicle.vehicle_model_id),
             vehicle_year: new FormControl(vehicle.vehicle_year),
             distance_value: new FormControl(vehicle.distance_value),
             estimate: new FormControl(vehicle.estimate),
-          }))
+          }),{emitEvent: false})
+
         });
       } else {
         this.vehicles.push(new FormGroup({
@@ -76,7 +79,7 @@ export class VehiclesEstimateCalculatorComponent extends CalculatorComponent {
           vehicle_year: new FormControl(null),
           distance_value: new FormControl(""),
           estimate: new FormControl(null),
-        }))
+        }),{emitEvent: false})
       }
 
       this.calculateVehicleEstimate$$.pipe(
@@ -102,11 +105,14 @@ export class VehiclesEstimateCalculatorComponent extends CalculatorComponent {
         this.takeUntilDestroyed(),
       ).subscribe();
 
-      this.vehicles.valueChanges.subscribe(console.log);
+      this.vehicles.valueChanges.pipe(
+        this.takeUntilDestroyed(),
+        debounceTime(1000),
+      ).subscribe(()=>this.syncEstimate());
     }
 
-    ngAfterViewInit(): void {
-
+    syncEstimate(): void {
+      //this.store.dispatch(EstimateActions.syncVehiclesEstimate({ vehicles: this.vehicles.value }));
     }
 
     onMakeSelected($ev: MatSelectChange, formIndex: number): void {
@@ -151,4 +157,7 @@ export class VehiclesEstimateCalculatorComponent extends CalculatorComponent {
       this.vehicles.removeAt(formIndex);
     }
 
+    calculateTotalEstimate(): void {
+      //return this.vehicles.value.reduce((acc, vehicle) => acc + vehicle.estimate, 0 as number);
+    }
 }
