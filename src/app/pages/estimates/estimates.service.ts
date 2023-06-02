@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, WritableSignal, inject, signal } from '@angular/core';
 import { Observable, map, shareReplay } from 'rxjs';
-import { ServiceVehicleMake, ServiceVehicleModel } from 'src/app/interfaces/api-service.interface';
-import { VehicleMake, VehicleModel, VehicleModelMap } from 'src/app/interfaces/app.interface';
+import { ServiceVehicleEstimate, ServiceVehicleEstimateRequest, ServiceVehicleMake, ServiceVehicleModel } from 'src/app/interfaces/api-service.interface';
+import { VehicleMake, VehicleModel } from 'src/app/interfaces/app.interface';
 
 @Injectable()
 export class EstimatesApiService {
@@ -20,4 +20,14 @@ export class EstimatesApiService {
   getVehicleModelsByMake(makeId: string): Observable<ServiceVehicleModel[]>  {
     return this.http.get<ServiceVehicleModel[]>(`${this.baseUrl}/vehicle_makes/${makeId}/vehicle_models`)
   }
+
+  calculateVehicleEmissions(vehicle: ServiceVehicleEstimateRequest): Observable<ServiceVehicleEstimate> {
+    return this.http.post<ServiceVehicleEstimate>(`${this.baseUrl}/estimates`, {
+      type: "vehicle",
+      distance_unit: vehicle.distance_unit,
+      distance_value: vehicle.distance_value,
+      vehicle_model_id: vehicle.vehicle_model_id
+    })
+  }
+
 }

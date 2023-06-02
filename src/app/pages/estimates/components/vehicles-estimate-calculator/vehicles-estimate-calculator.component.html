@@ -4,7 +4,7 @@
             <div class="vehicles-estimate-form-row" [formGroupName]="i">
 
                 <mat-form-field appearance="fill">
-                    <mat-select formControlName="vehicle_make" (selectionChange)="onMakeSelected($event)" placeholder="Marca Veicolo">
+                    <mat-select formControlName="vehicle_make_id" (selectionChange)="onMakeSelected($event, i)" placeholder="Marca Veicolo">
                         <ng-container *ngFor="let make of vehicleMakes()">
                           <mat-option [value]="make.id">{{make.name}} ({{make.numberOfModels}})</mat-option>
                         </ng-container>
@@ -12,12 +12,11 @@
                 </mat-form-field>
 
                 <mat-form-field appearance="fill">
-                    <mat-select formControlName="vehicle_model" placeholder="Modello veicolo ">
-
-                        <mat-option value="beginner">Beginner</mat-option>
-                        <mat-option value="intermediate">Intermediate</mat-option>
-                        <mat-option value="advanced">Advanced</mat-option>
-                    </mat-select>
+                  <mat-select formControlName="vehicle_model_id" (selectionChange)="onModelSelected($event, i)" placeholder="Modello Veicolo">
+                    <ng-container *ngFor="let model of (vehicleModels() | filterByMakeId: form.get('vehicles')?.get(i.toString())?.get('vehicle_make_id')?.value)">
+                      <mat-option [value]="model.id">{{model.name}} ({{model.year}})</mat-option>
+                    </ng-container>
+                  </mat-select>
                 </mat-form-field>
 
 
@@ -28,14 +27,30 @@
                 </mat-form-field>
 
 
+                <button
+                  *ngIf=" isCalculatingEstimate().index !== i && form.get('vehicles')?.get(i.toString())?.get('estimate')?.value === null"
+                  mat-raised-button color="primary" (click)="onCalculateVehicleEstimate(i)">
+                    Calcola emissioni
+                </button>
+                <mat-spinner *ngIf="isCalculatingEstimate().index == i">
+                </mat-spinner>
+                <span
+                  *ngIf=" isCalculatingEstimate().index !== i && form.get('vehicles')?.get(i.toString())?.get('estimate')?.value">
+                  {{ form.get('vehicles')?.get(i.toString())?.get('estimate')?.value }}
+                </span>
+
+                <button mat-mini-fab (click)="onRemoveVehicle(i)">
+                  <mat-icon class="add-remove-btn">delete</mat-icon>
+                </button>
+
               </div>
         </ng-container>
     </ng-container>
 
-    <!--
-      <button mat-mini-fab (click)="addLesson()">
-      <mat-icon class="add-course-btn">add</mat-icon>
-      </button>
-    -->
+
+    <button mat-mini-fab (click)="onAddVehicle()">
+      <mat-icon class="add-vehicle-btn">add</mat-icon>
+    </button>
+
 
 </div>

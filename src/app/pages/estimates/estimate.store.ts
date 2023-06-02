@@ -1,6 +1,6 @@
 import { Observable } from "rxjs";
 import { createActionGroup, createFeature, createReducer, createSelector, emptyProps, on, props } from '@ngrx/store';
-import { VehicleMake, VehicleModel, VehicleModelMap } from "src/app/interfaces/app.interface";
+import { VehicleMake, VehicleModel } from "src/app/interfaces/app.interface";
 
 export interface EstimateState {
   formConfig: {
@@ -25,8 +25,8 @@ export const EstimateActions = createActionGroup({
   events: {
     'Loading Vehicle Makes': emptyProps(),
     'Loaded Vehicle Makes': props<{ makes: VehicleMake[] }>(),
-    'Loading Models By Make': emptyProps(),
-    'Loaded Models By Make': props<{ makeId: number, models: VehicleModel[] }>(),
+    'Loading Models By Make': props<{ makeId: string }>(),
+    'Loaded Models By Make': props<{ makeId: string, models: VehicleModel[] }>(),
   },
 });
 
