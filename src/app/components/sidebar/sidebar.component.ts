@@ -22,14 +22,6 @@ export class SidebarComponent {
   private store = inject(Store);
   public estimates: Signal<TotalEstimate[]> = this.store.selectSignal(selectEstimates);
 
-
-
-  ngOnInit(): void {
-    this.store.dispatch(AppActions.addingEstimate({ estimate: { id: 1, name: 'Estimate 1', description: 'Estimate 1 description' } }));
-    this.store.dispatch(AppActions.addingEstimate({ estimate: { id: 2, name: 'Estimate 2', description: 'Estimate 2 description' } }));
-    console.log(this.estimates())
-  }
-
   onCloseSidebar(): void {
     this.sidebarOpen.update(v => false);
   }
