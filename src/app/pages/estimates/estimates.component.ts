@@ -14,11 +14,4 @@ import { VehiclesEstimateCalculatorComponent } from './components/vehicles-estim
 })
 export class EstimatesComponent {
   @Input() id?: string;
-
-  ngOnInit() {
-    if(this.id) {
-      console.log(this.id);
-    }
-  }
-
 }
