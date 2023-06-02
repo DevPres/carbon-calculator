@@ -5,18 +5,25 @@ export interface TotalEstimate {
   emissions?: number;
 };
 
-export interface VehicleEstimate {
-  estimateType: 'byVehicles';
-  vehicles: {
-    distance_value: number;
-    vehicle_make: string;
-    vehicle_model: string;
-    vehicle_year: number;
-    vehicle_model_id: string;
-    distance_unit: string;
-    estimate: number;
-  }[];
+export interface EstimateBase {
+  type: CalculatorType;
+  totalEstimate: number;
 }
+
+export interface VehiclesEstimate extends EstimateBase {
+  type: CalculatorEnum.vehicles;
+  vehicles: VehicleEstimate[];
+}
+
+export interface VehicleEstimate {
+  distance_value: number;
+  vehicle_make_id: string;
+  vehicle_model_id: string;
+  vehicle_year: number;
+  distance_unit: string;
+  estimate: number;
+}
+
 
 export interface VehicleMake {
   id: string;
@@ -30,3 +37,9 @@ export interface VehicleModel {
   name: string;
   year: number;
 }
+
+export enum CalculatorEnum {
+  vehicles = 'vehicles',
+}
+
+export type CalculatorType = `${CalculatorEnum}`;
