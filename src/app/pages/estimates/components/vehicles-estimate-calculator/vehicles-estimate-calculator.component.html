@@ -28,15 +28,15 @@
 
 
                 <button
-                  *ngIf=" isCalculatingEstimate().index !== i && form.get('vehicles')?.get(i.toString())?.get('estimate')?.value === null"
+                  *ngIf=" isCalculatingEstimate().index !== i && form.get('vehicles')?.get(i.toString())?.get('emissions')?.value === null"
                   mat-raised-button color="primary" (click)="onCalculateVehicleEstimate(i)">
                     Calcola emissioni
                 </button>
                 <mat-spinner *ngIf="isCalculatingEstimate().index == i">
                 </mat-spinner>
                 <span
-                  *ngIf=" isCalculatingEstimate().index !== i && form.get('vehicles')?.get(i.toString())?.get('estimate')?.value">
-                  {{ form.get('vehicles')?.get(i.toString())?.get('estimate')?.value }}
+                  *ngIf=" isCalculatingEstimate().index !== i && form.get('vehicles')?.get(i.toString())?.get('emissions')?.value">
+                  {{ form.get('vehicles')?.get(i.toString())?.get('emissions')?.value }}
                 </span>
 
                 <button mat-mini-fab (click)="onRemoveVehicle(i)">

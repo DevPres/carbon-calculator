@@ -1,13 +1,14 @@
 export interface TotalEstimate {
-  id: number;
+  id: string;
   name: string;
   description?: string;
-  emissions?: number;
+  emissions: number;
+  vehiclesEstimate: VehiclesEstimate;
 };
 
 export interface EstimateBase {
   type: CalculatorType;
-  totalEstimate: number;
+  totalEmissions: number;
 }
 
 export interface VehiclesEstimate extends EstimateBase {
@@ -21,7 +22,7 @@ export interface VehicleEstimate {
   vehicle_model_id: string;
   vehicle_year: number;
   distance_unit: string;
-  estimate: number;
+  emissions: number;
 }
 
 

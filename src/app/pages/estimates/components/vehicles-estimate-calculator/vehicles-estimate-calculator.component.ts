@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input, WritableSignal, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CalculatorComponent } from '../calculator.abstract';
-import { CalculatorEnum, VehicleEstimate, VehiclesEstimate } from 'src/app/interfaces/app.interface';
+import { CalculatorEnum, TotalEstimate, VehicleEstimate, VehiclesEstimate } from 'src/app/interfaces/app.interface';
 import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input'
@@ -9,7 +9,7 @@ import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { EstimatesApiService } from '../../estimates.service';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { EMPTY, ReplaySubject, catchError, debounceTime, finalize, retry, switchMap, takeUntil, tap } from 'rxjs';
-import { Store } from '@ngrx/store';
+import { Action, Store } from '@ngrx/store';
 import { EstimateActions, estimateFeature } from '@pages/estimates/estimate.store';
 import { FilterByMakeId } from '@pages/estimates/pipes/filter-by-make-id.pipe';
 import { untildestroyed } from 'src/app/utils/function';
@@ -27,7 +27,10 @@ import { MatButtonModule } from '@angular/material/button';
   styleUrls: ['./vehicles-estimate-calculator.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class VehiclesEstimateCalculatorComponent extends CalculatorComponent {
+export class VehiclesEstimateCalculatorComponent {
+
+    @Input({required: true}) estimate!: TotalEstimate
+
 
     calculatorKey = CalculatorEnum.vehicles
 
@@ -39,6 +42,20 @@ export class VehiclesEstimateCalculatorComponent extends CalculatorComponent {
     get vehicles(): FormArray {
       return this.form.get('vehicles') as FormArray;
     }
+
+    get totalEmissions(): number {
+      return this.vehicles.value.reduce((acc: number, vehicle: VehicleEstimate) => {
+        return acc + vehicle.emissions;
+      }, 0)
+    }
+
+    get vehiclesEstimate(): VehiclesEstimate {
+      return ({
+        type: CalculatorEnum.vehicles,
+        totalEmissions: this.totalEmissions,
+        vehicles: this.vehicles.value
+      })
+    }
     private store = inject(Store);
     private apiService = inject(EstimatesApiService);
 
@@ -46,28 +63,26 @@ export class VehiclesEstimateCalculatorComponent extends CalculatorComponent {
 
     private calculateVehicleEstimate$$ = new ReplaySubject<number>();
 
-
-
     isCalculatingEstimate: WritableSignal<{ calculating: boolean, index: number | null }> = signal({calculating: false, index: null});
     vehicleMakes = this.store.selectSignal(estimateFeature.selectVehicleMakes);
     vehicleModels = this.store.selectSignal(estimateFeature.selectVehicleModels);
 
 
-    override ngOnInit(): void {
-      super.ngOnInit();
+    ngOnInit(): void {
 
       this.store.dispatch(EstimateActions.loadingVehicleMakes());
+      let vehicles = this.estimate.vehiclesEstimate.vehicles;
 
-      if(this.estimate && this.estimate.type == this.calculatorKey) {
+      if(vehicles.length) {
         this.vehicles.clear();
-        this.estimate.vehicles.forEach(vehicle => {
+        vehicles.forEach(vehicle => {
           this.vehicles.push(new FormGroup({
             distance_unit: new FormControl("km"),
             vehicle_make_id: new FormControl(vehicle.vehicle_make_id),
             vehicle_model_id: new FormControl(vehicle.vehicle_model_id),
             vehicle_year: new FormControl(vehicle.vehicle_year),
             distance_value: new FormControl(vehicle.distance_value),
-            estimate: new FormControl(vehicle.estimate),
+            emissions: new FormControl(vehicle.emissions),
           }),{emitEvent: false})
 
         });
@@ -78,7 +93,7 @@ export class VehiclesEstimateCalculatorComponent extends CalculatorComponent {
           vehicle_model_id: new FormControl(""),
           vehicle_year: new FormControl(null),
           distance_value: new FormControl(""),
-          estimate: new FormControl(null),
+          emissions: new FormControl(null),
         }),{emitEvent: false})
       }
 
@@ -91,7 +106,7 @@ export class VehiclesEstimateCalculatorComponent extends CalculatorComponent {
             retry(3),
             tap(estimate => {
               let estimateKg = estimate.data.attributes.carbon_kg;
-              this.form.get('vehicles')?.get(formIndex.toString())?.get('estimate')?.setValue(estimateKg);
+              this.form.get('vehicles')?.get(formIndex.toString())?.get('emissions')?.setValue(estimateKg);
             }),
             //HANDLE ERROR
             catchError(err => EMPTY),
@@ -107,12 +122,12 @@ export class VehiclesEstimateCalculatorComponent extends CalculatorComponent {
 
       this.vehicles.valueChanges.pipe(
         this.takeUntilDestroyed(),
-        debounceTime(1000),
+        debounceTime(300),
       ).subscribe(()=>this.syncEstimate());
     }
 
     syncEstimate(): void {
-      //this.store.dispatch(EstimateActions.syncVehiclesEstimate({ vehicles: this.vehicles.value }));
+      this.store.dispatch(EstimateActions.syncVehiclesEstimate({ vehiclesEstimate: this.vehiclesEstimate }));
     }
 
     onMakeSelected($ev: MatSelectChange, formIndex: number): void {
@@ -149,15 +164,11 @@ export class VehiclesEstimateCalculatorComponent extends CalculatorComponent {
         vehicle_model_id: new FormControl(""),
         vehicle_year: new FormControl(null),
         distance_value: new FormControl(""),
-        estimate: new FormControl(null),
+        emissions: new FormControl(null),
       }))
     }
 
     onRemoveVehicle(formIndex: number): void {
       this.vehicles.removeAt(formIndex);
-    }
-
-    calculateTotalEstimate(): void {
-      //return this.vehicles.value.reduce((acc, vehicle) => acc + vehicle.estimate, 0 as number);
     }
 }
