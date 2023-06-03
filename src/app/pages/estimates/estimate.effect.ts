@@ -1,9 +1,12 @@
 import { inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { catchError, map, of, retry, switchMap, tap } from 'rxjs';
+import { EMPTY, catchError, map, of, retry, switchMap, tap, withLatestFrom } from 'rxjs';
 import { EstimateActions } from './estimate.store';
 import { EstimatesApiService } from './estimates.service';
 import { VehicleMake, VehicleModel } from 'src/app/interfaces/app.interface';
+import { AppActions  } from 'src/app/app.store';
+import { ROUTER_REQUEST } from '@ngrx/router-store';
+
 
 export const loadVehicleMakes = createEffect(
   (
@@ -29,12 +32,14 @@ export const loadVehicleMakes = createEffect(
           map((vehicleMakes: VehicleMake[]) => EstimateActions.loadedVehicleMakes({ makes: vehicleMakes })),
           retry(3),
           //HANDLE ERROR
+          catchError(() => EMPTY)
         )
       )
     );
   },
   { functional: true }
 );
+
 
 export const loadVehicleModel = createEffect(
   (
@@ -60,10 +65,10 @@ export const loadVehicleModel = createEffect(
           map((vehicleModels: VehicleModel[]) => EstimateActions.loadedModelsByMake({ makeId, models: vehicleModels })),
           retry(3),
           //HANDLE ERROR
+          catchError(() => EMPTY)
         )
       )
     );
   },
   { functional: true }
 );
-

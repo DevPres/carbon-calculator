@@ -1,6 +1,7 @@
 import { Observable } from "rxjs";
 import { createActionGroup, createFeature, createReducer, createSelector, emptyProps, on, props } from '@ngrx/store';
-import { VehicleMake, VehicleModel } from "src/app/interfaces/app.interface";
+import { TotalEstimate, VehicleMake, VehicleModel, VehiclesEstimate } from "src/app/interfaces/app.interface";
+import { AppActions } from "src/app/app.store";
 
 export interface EstimateState {
   formConfig: {
@@ -8,7 +9,10 @@ export interface EstimateState {
     vehicleModels: {
       [key: string]: VehicleModel[];
     }
-  }
+  },
+  selectedEstimate: TotalEstimate | null;
+  selectedEstimateUnsaved: boolean;
+
 }
 
 
@@ -16,7 +20,9 @@ export const initialState: EstimateState = {
   formConfig: {
     vehicleMakes: [],
     vehicleModels: {}
-  }
+  },
+  selectedEstimate: null,
+  selectedEstimateUnsaved: false
 };
 
 
@@ -27,6 +33,9 @@ export const EstimateActions = createActionGroup({
     'Loaded Vehicle Makes': props<{ makes: VehicleMake[] }>(),
     'Loading Models By Make': props<{ makeId: string }>(),
     'Loaded Models By Make': props<{ makeId: string, models: VehicleModel[] }>(),
+    'Load Selected Estimate': props<TotalEstimate>(),
+    'Sync Vehicles Estimate': props<{ vehiclesEstimate: VehiclesEstimate }>(),
+    'Estimate changed': emptyProps()
   },
 });
 
@@ -51,6 +60,27 @@ export const estimateReducer = createReducer(
       }
     }
   })),
+  on(EstimateActions.loadSelectedEstimate, (state, { id, name, emissions, vehiclesEstimate  }) => ({
+    ...state,
+    selectedEstimate: {
+      id,
+      name,
+      emissions,
+      vehiclesEstimate
+    }
+  })),
+  on(EstimateActions.syncVehiclesEstimate, (state, { vehiclesEstimate }) => ({
+    ...state,
+    selectedEstimate: {
+      ...state.selectedEstimate as TotalEstimate,
+      vehiclesEstimate: vehiclesEstimate
+    },
+    selectedEstimateUnsaved: true
+  })),
+  on(AppActions.saveChangeOnEstimateById, (state) => ({
+    ...state,
+    selectedEstimateUnsaved: false
+  }))
 );
 
   export const estimateFeature = createFeature({

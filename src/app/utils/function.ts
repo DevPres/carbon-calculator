@@ -1,7 +1,7 @@
 import { DestroyRef, inject } from "@angular/core";
 import { Subject, takeUntil } from "rxjs";
 
-// utils/functions.ts
+
 export function untildestroyed() {
   const subject = new Subject();
 
@@ -11,4 +11,9 @@ export function untildestroyed() {
   });
 
   return () => takeUntil(subject.asObservable());
+}
+
+
+export function generateUUID() {
+  return Math.floor(Math.random() * Date.now()).toString(16)
 }

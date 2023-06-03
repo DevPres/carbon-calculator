@@ -9,6 +9,7 @@ import { provideEffects } from '@ngrx/effects';
 import * as AppEffects from './app.effects';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { TokenInterceptor } from './interceptor/token.interceptor';
+import { provideRouterStore, routerReducer } from '@ngrx/router-store';
 
 export const AppConfig: ApplicationConfig = {
     providers: [

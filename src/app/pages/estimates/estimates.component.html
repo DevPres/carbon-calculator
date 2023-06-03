@@ -1,8 +1,12 @@
-<mat-card class="estimates-tab-group">
+<mat-card class="estimates-tab-group" *ngIf="estimate$ | async as estimate">
   <mat-tab-group animationDuration="1000ms">
     <mat-tab label="Veicoli">
-        <app-vehicles-estimate-calculator></app-vehicles-estimate-calculator>
+        <app-vehicles-estimate-calculator [estimate]="estimate"></app-vehicles-estimate-calculator>
     </mat-tab>
     <mat-tab label="Bolletta">Bolletta</mat-tab>
   </mat-tab-group>
+  <mat-card-actions *ngIf="isUnsaved()">
+    <button mat-raised-button color="primary" (click)="onSaveChanges()">Salva</button>
+    <button mat-raised-button color="accent" >Annulla</button>
+  </mat-card-actions>
 </mat-card>
