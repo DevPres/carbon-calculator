@@ -8,7 +8,7 @@
       <app-bills-estimate-calculator [resetChanges$]="resetChanges$" [estimate]="estimate$ | async"></app-bills-estimate-calculator>
     </mat-tab>
   </mat-tab-group>
-  <mat-card-actions *ngIf="isUnsaved()">
+  <mat-card-actions class="card-cta" *ngIf="isUnsaved()">
     <button mat-raised-button color="primary" (click)="onSaveChanges()">Salva</button>
     <button mat-raised-button color="accent" (click)="onDeleteChanges()">Annulla</button>
   </mat-card-actions>

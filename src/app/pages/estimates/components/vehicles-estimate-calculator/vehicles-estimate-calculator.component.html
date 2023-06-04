@@ -3,7 +3,8 @@
         <ng-container *ngFor="let vehicle of vehicles.controls; let i = index">
             <div class="vehicles-estimate-form-row" [formGroupName]="i">
 
-                <mat-form-field appearance="fill">
+                <mat-form-field appearance="outline">
+                    <mat-label>Marca veicolo: </mat-label>
                     <mat-select formControlName="vehicle_make_id" (selectionChange)="onMakeSelected($event, i)" placeholder="Marca Veicolo">
                         <ng-container *ngFor="let make of vehicleMakes()">
                           <mat-option [value]="make.id">{{make.name}} ({{make.numberOfModels}})</mat-option>
@@ -11,7 +12,8 @@
                     </mat-select>
                 </mat-form-field>
 
-                <mat-form-field appearance="fill">
+                <mat-form-field appearance="outline">
+                  <mat-label>Modello veicolo: </mat-label>
                   <mat-select formControlName="vehicle_model_id" (selectionChange)="onModelSelected($event, i)" placeholder="Modello Veicolo">
                     <ng-container *ngFor="let model of (vehicleModels() | filterByMakeId: form.get('vehicles')?.get(i.toString())?.get('vehicle_make_id')?.value)">
                       <mat-option [value]="model.id">{{model.name}} ({{model.year}})</mat-option>
@@ -20,7 +22,8 @@
                 </mat-form-field>
 
 
-                <mat-form-field appearance="fill">
+                <mat-form-field appearance="outline">
+                  <mat-label>Distanza percorsa (Km): </mat-label>
                   <input matInput
                     type="number"
                     formControlName="distance_value"
@@ -33,7 +36,7 @@
                   mat-raised-button color="primary" (click)="onCalculateEstimate(i)">
                     Calcola emissioni
                 </button>
-                <mat-spinner *ngIf="isCalculatingEstimate().index == i">
+                <mat-spinner [diameter]="50" *ngIf="isCalculatingEstimate().index == i">
                 </mat-spinner>
                 <span
                   *ngIf=" isCalculatingEstimate().index !== i && form.get('vehicles')?.get(i.toString())?.get('emissions')?.value">
@@ -49,7 +52,8 @@
     </ng-container>
 
 
-    <button mat-mini-fab (click)="onAddRow()">
+    <button class="add-row-button" mat-raised-button (click)="onAddRow()">
+      Aggiungi Veicolo
       <mat-icon class="add-vehicle-btn">add</mat-icon>
     </button>
 

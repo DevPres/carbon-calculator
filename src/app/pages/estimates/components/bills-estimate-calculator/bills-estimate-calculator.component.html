@@ -3,7 +3,8 @@
         <ng-container *ngFor="let bill of bills.controls; let i = index">
             <div class="bills-estimate-form-row" [formGroupName]="i">
 
-                <mat-form-field appearance="fill">
+                <mat-form-field appearance="outline">
+                    <mat-label>Nazione: </mat-label>
                     <mat-select formControlName="country" placeholder="Nazione">
                         <ng-container *ngFor="let country of countries">
                           <mat-option [value]="country.code">{{country.name}}</mat-option>
@@ -12,7 +13,8 @@
                 </mat-form-field>
 
 
-                <mat-form-field appearance="fill">
+                <mat-form-field appearance="outline">
+                  <mat-label>Consumo elettrico (mwh): </mat-label>
                   <input matInput
                     type="number"
                     formControlName="electricity_value"
@@ -25,7 +27,7 @@
                   mat-raised-button color="primary" (click)="onCalculateEstimate(i)">
                     Calcola emissioni
                 </button>
-                <mat-spinner *ngIf="isCalculatingEstimate().index == i">
+                <mat-spinner [diameter]="50" *ngIf="isCalculatingEstimate().index == i">
                 </mat-spinner>
                 <span
                   *ngIf=" isCalculatingEstimate().index !== i && form.get('bills')?.get(i.toString())?.get('emissions')?.value">
@@ -40,8 +42,8 @@
         </ng-container>
     </ng-container>
 
-
-    <button mat-mini-fab (click)="onAddRow()">
+    <button class="add-row-button" mat-raised-button (click)="onAddRow()">
+      Aggiungi Bolletta
       <mat-icon class="add-vehicle-btn">add</mat-icon>
     </button>
 

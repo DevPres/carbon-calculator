@@ -141,7 +141,7 @@ export class VehiclesEstimateCalculatorComponent {
         vehicle_make_id: new FormControl(data?.vehicle_make_id || ""),
         vehicle_model_id: new FormControl(data?.vehicle_model_id || ""),
         vehicle_year: new FormControl(data?.vehicle_year || null),
-        distance_value: new FormControl(data?.distance_value || 0),
+        distance_value: new FormControl(data?.distance_value || null),
         emissions: new FormControl(data?.emissions || null),
       }),{emitEvent: emit})
 
@@ -184,5 +184,8 @@ export class VehiclesEstimateCalculatorComponent {
 
     onRemoveRow(formIndex: number): void {
       this.vehicles.removeAt(formIndex);
+      if(this.vehicles.length == 0) {
+        this.addRow(null);
+      }
     }
 }

@@ -13,11 +13,12 @@ import { TotalEstimate } from 'src/app/interfaces/app.interface';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BillsEstimateCalculatorComponent } from './components/bills-estimate-calculator/bills-estimate-calculator.component';
 import { EstimatePreviewComponent } from './components/estimate-preview/estimate-preview.component';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-estimates',
   standalone: true,
-  imports: [CommonModule, MatTabsModule, MatCardModule, VehiclesEstimateCalculatorComponent, BillsEstimateCalculatorComponent, EstimatePreviewComponent ],
+  imports: [CommonModule, MatTabsModule, MatCardModule, MatButtonModule, VehiclesEstimateCalculatorComponent, BillsEstimateCalculatorComponent, EstimatePreviewComponent ],
   templateUrl: './estimates.component.html',
   styleUrls: ['./estimates.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush

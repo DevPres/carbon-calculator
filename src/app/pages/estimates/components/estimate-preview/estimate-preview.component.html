@@ -1,49 +1,50 @@
 <ng-container *ngIf="estimate() as estimate">
-<mat-card>
+  <mat-card>
     <mat-card-header>
       <mat-card-title>
         {{ estimate.name || ""}}
       </mat-card-title>
     </mat-card-header>
     <mat-card-content>
-      <mat-list>
-        <mat-list-item>
-          <mat-icon>label_important</mat-icon>
-          <span>
-            Emissioni totali (kg):
+      <mat-list class="estimate-data-list">
+        <mat-list-item >
+          <div class="estimate-data-list-item">
+            <mat-icon>label_important</mat-icon>
+            <span>Emissioni totali (kg): </span>
             <b>{{ estimate.emissionsKg || 0 }}</b>
-          </span>
+          </div>
+
         </mat-list-item>
         <ng-container *ngIf="vehiclesNumber() > 0">
           <mat-list-item >
-            <mat-icon>directions_car</mat-icon>
-            <span>
-              Veicoli:
+            <div class="estimate-data-list-item">
+              <mat-icon>directions_car</mat-icon>
+              <span>Veicoli: </span>
               <b>{{ vehiclesNumber() }}</b>
-            </span>
+            </div>
           </mat-list-item>
           <mat-list-item >
-            <mat-icon>directions_run</mat-icon>
-            <span>
-              Km percorsi:
+            <div class="estimate-data-list-item">
+              <mat-icon>directions_run</mat-icon>
+              <span>Km percorsi: </span>
               <b>{{ estimate.vehiclesEstimate.totalDistanceKm }}</b>
-            </span>
+            </div>
           </mat-list-item>
         </ng-container>
         <ng-container *ngIf="billsNumber() > 0">
           <mat-list-item >
-            <mat-icon>receipt</mat-icon>
-            <span>
-              Bollette:
+            <div class="estimate-data-list-item">
+              <mat-icon>receipt</mat-icon>
+              <span>Bollette: </span>
               <b>{{ billsNumber() }}</b>
-            </span>
+            </div>
           </mat-list-item>
           <mat-list-item >
-            <mat-icon>directions_run</mat-icon>
-            <span>
-              Mhw consumati:
+            <div class="estimate-data-list-item">
+              <mat-icon>directions_run</mat-icon>
+              <span>Mhw consumati: </span>
               <b>{{ estimate.billsEstimate.totalElectricityMwh }}</b>
-            </span>
+            </div>
           </mat-list-item>
         </ng-container>
       </mat-list>
