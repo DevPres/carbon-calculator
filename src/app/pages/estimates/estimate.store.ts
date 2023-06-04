@@ -35,7 +35,9 @@ export const EstimateActions = createActionGroup({
     'Loaded Models By Make': props<{ makeId: string, models: VehicleModel[] }>(),
     'Load Selected Estimate': props<TotalEstimate>(),
     'Sync Vehicles Estimate': props<{ vehiclesEstimate: VehiclesEstimate }>(),
-    'Estimate changed': emptyProps()
+    'Estimate changed': emptyProps(),
+    'Save Estimate': props<TotalEstimate>(),
+    'Delete Changes': emptyProps(),
   },
 });
 
@@ -67,7 +69,8 @@ export const estimateReducer = createReducer(
       name,
       emissions,
       vehiclesEstimate
-    }
+    },
+    selectedEstimateUnsaved: false
   })),
   on(EstimateActions.syncVehiclesEstimate, (state, { vehiclesEstimate }) => ({
     ...state,
@@ -77,7 +80,7 @@ export const estimateReducer = createReducer(
     },
     selectedEstimateUnsaved: true
   })),
-  on(AppActions.saveChangeOnEstimateById, (state) => ({
+  on(EstimateActions.saveEstimate, (state) => ({
     ...state,
     selectedEstimateUnsaved: false
   }))

@@ -1,11 +1,11 @@
-import { ChangeDetectionStrategy, Component, Input, inject, effect, DestroyRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, inject, effect, DestroyRef, Signal, WritableSignal, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatCardModule } from '@angular/material/card';
 import { VehiclesEstimateCalculatorComponent } from './components/vehicles-estimate-calculator/vehicles-estimate-calculator.component';
 import { Store } from '@ngrx/store';
 import { AppActions, selectEstimates } from 'src/app/app.store';
-import { Observable, map, tap } from 'rxjs';
+import { Observable, ReplaySubject, first, map, tap } from 'rxjs';
 import { Router } from '@angular/router';
 import { EstimateActions, estimateFeature } from './estimate.store';
 import { untildestroyed } from 'src/app/utils/function';
@@ -29,25 +29,41 @@ export class EstimatesComponent {
 
   private readonly untilDestroyed = untildestroyed();
 
-  readonly estimate$: Observable<TotalEstimate | undefined> = this.store.select(selectEstimates).pipe(
-    map(estimates => estimates.find(estimate => estimate.id === this.id)),
+  readonly estimate$: Observable<TotalEstimate | null> = this.store.select(selectEstimates).pipe(
+    tap(() => console.log('passo select' )),
+    map(estimates => estimates.find(estimate => estimate.id === this.id) || null),
   );
 
-  readonly selectedEstimate = this.store.selectSignal(estimateFeature.selectSelectedEstimate);
+  readonly selectedEstimate: Signal<TotalEstimate | null> = this.store.selectSignal(estimateFeature.selectSelectedEstimate);
+  readonly isUnsaved: Signal<boolean> = this.store.selectSignal(estimateFeature.selectSelectedEstimateUnsaved);
 
-  readonly isUnsaved = this.store.selectSignal(estimateFeature.selectSelectedEstimateUnsaved);
+  resetChanges$ = new ReplaySubject<void>();
 
-  ngOnInit() {
+
+  ngOnInit(): void {
+    this.store.dispatch(EstimateActions.loadingVehicleMakes());
+
     this.estimate$.pipe(
-      takeUntilDestroyed(this.destroyRef),
-    ).subscribe((estimate: TotalEstimate | undefined) => {
-      if(!estimate) this.router.navigate(['/home']);
-      else this.store.dispatch(EstimateActions.loadSelectedEstimate( estimate ));
+      first(),
+    ).subscribe((estimate: TotalEstimate | null) => {
+      if(!estimate) {
+        this.router.navigate(['/home']);
+        return;
+      }
+      this.store.dispatch(EstimateActions.loadSelectedEstimate( estimate ));
     });
   }
 
-  onSaveChanges() {
-    this.store.dispatch(AppActions.saveChangeOnEstimateById(this.selectedEstimate() as TotalEstimate));
+  onSaveChanges(): void {
+    this.store.dispatch(EstimateActions.saveEstimate(this.selectedEstimate() as TotalEstimate));
+  }
+
+  onDeleteChanges(): void {
+    this.resetChanges();
+  }
+
+  resetChanges() {
+    this.resetChanges$.next()
   }
 
 }

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, WritableSignal, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, Input, WritableSignal, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CalculatorComponent } from '../calculator.abstract';
 import { CalculatorEnum, TotalEstimate, VehicleEstimate, VehiclesEstimate } from 'src/app/interfaces/app.interface';
@@ -7,7 +7,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input'
 import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { EstimatesApiService } from '../../estimates.service';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { EMPTY, ReplaySubject, catchError, debounceTime, finalize, retry, switchMap, takeUntil, tap } from 'rxjs';
 import { Action, Store } from '@ngrx/store';
 import { EstimateActions, estimateFeature } from '@pages/estimates/estimate.store';
@@ -29,10 +29,14 @@ import { MatButtonModule } from '@angular/material/button';
 })
 export class VehiclesEstimateCalculatorComponent {
 
-    @Input({required: true}) estimate!: TotalEstimate
+    @Input({required: true}) set estimate(value: TotalEstimate | null) {
+      console.log('estimate input', value)
+       let vehicles = value && value.vehiclesEstimate.vehicles || [];
+      this.createForm(vehicles)
+      this.initialData = vehicles;
+    }
 
-
-    calculatorKey = CalculatorEnum.vehicles
+    @Input() resetChanges$!: ReplaySubject<void>;
 
     public form = new FormGroup({
       vehicles: new FormArray([])
@@ -56,8 +60,10 @@ export class VehiclesEstimateCalculatorComponent {
         vehicles: this.vehicles.value
       })
     }
-    private store = inject(Store);
-    private apiService = inject(EstimatesApiService);
+    private readonly store = inject(Store);
+    private readonly apiService = inject(EstimatesApiService);
+    private readonly destroyRef = inject(DestroyRef);
+
 
     private takeUntilDestroyed = untildestroyed();
 
@@ -66,38 +72,13 @@ export class VehiclesEstimateCalculatorComponent {
     isCalculatingEstimate: WritableSignal<{ calculating: boolean, index: number | null }> = signal({calculating: false, index: null});
     vehicleMakes = this.store.selectSignal(estimateFeature.selectVehicleMakes);
     vehicleModels = this.store.selectSignal(estimateFeature.selectVehicleModels);
+    initialData: any;
 
 
     ngOnInit(): void {
 
-      this.store.dispatch(EstimateActions.loadingVehicleMakes());
-      let vehicles = this.estimate.vehiclesEstimate.vehicles;
-
-      if(vehicles.length) {
-        this.vehicles.clear();
-        vehicles.forEach(vehicle => {
-          this.vehicles.push(new FormGroup({
-            distance_unit: new FormControl("km"),
-            vehicle_make_id: new FormControl(vehicle.vehicle_make_id),
-            vehicle_model_id: new FormControl(vehicle.vehicle_model_id),
-            vehicle_year: new FormControl(vehicle.vehicle_year),
-            distance_value: new FormControl(vehicle.distance_value),
-            emissions: new FormControl(vehicle.emissions),
-          }),{emitEvent: false})
-
-        });
-      } else {
-        this.vehicles.push(new FormGroup({
-          distance_unit: new FormControl("km"),
-          vehicle_make_id: new FormControl(""),
-          vehicle_model_id: new FormControl(""),
-          vehicle_year: new FormControl(null),
-          distance_value: new FormControl(""),
-          emissions: new FormControl(null),
-        }),{emitEvent: false})
-      }
-
       this.calculateVehicleEstimate$$.pipe(
+        takeUntilDestroyed(this.destroyRef),
         tap((formIndex) => this.isCalculatingEstimate.mutate(v=> {v.calculating = true; v.index = formIndex})),
         switchMap(formIndex => {
           let { type, distance_unit, distance_value, vehicle_model_id } = this.form.get('vehicles')?.get(formIndex.toString())?.value;
@@ -117,19 +98,62 @@ export class VehiclesEstimateCalculatorComponent {
             )
           )
         }),
-        this.takeUntilDestroyed(),
       ).subscribe();
 
+      this.resetChanges$.pipe(
+        takeUntilDestroyed(this.destroyRef),
+
+      ).subscribe(() => {
+        console.log('reset changes')
+        this.createForm(this.initialData, true)
+      })
+
       this.vehicles.valueChanges.pipe(
-        this.takeUntilDestroyed(),
-        debounceTime(300),
+        takeUntilDestroyed(this.destroyRef),
+        debounceTime(500),
       ).subscribe(()=>this.syncEstimate());
     }
 
-    syncEstimate(): void {
+
+    private createForm(vehicles: VehicleEstimate[], emit = false): void {
+      this.vehicles.clear({emitEvent: emit});
+      if(vehicles.length) {
+        vehicles.forEach(vehicle => {
+          this.addVeichleRow(vehicle);
+        })
+      } else {
+        this.addVeichleRow(null);
+      }
+
+    }
+
+    private addVeichleRow(veichle: VehicleEstimate | null): void {
+      this.vehicles.push(new FormGroup({
+        distance_unit: new FormControl("km"),
+        vehicle_make_id: new FormControl(veichle?.vehicle_make_id || ""),
+        vehicle_model_id: new FormControl(veichle?.vehicle_model_id || ""),
+        vehicle_year: new FormControl(veichle?.vehicle_year || null),
+        distance_value: new FormControl(veichle?.distance_value || ""),
+        emissions: new FormControl(veichle?.emissions || null),
+      }),{emitEvent: false})
+
+    }
+
+    private syncEstimate(): void {
       this.store.dispatch(EstimateActions.syncVehiclesEstimate({ vehiclesEstimate: this.vehiclesEstimate }));
     }
 
+    private setModelYear(formIndex: number): void {
+      let makeId = this.form.get('vehicles')?.get(formIndex.toString())?.get('vehicle_make_id')?.value;
+      let modelId = this.form.get('vehicles')?.get(formIndex.toString())?.get('vehicle_model_id')?.value;
+      let year = this.vehicleModels()[makeId].find(model => model.id == modelId)?.year;
+      this.form.get('vehicles')?.get(formIndex.toString())?.get('vehicle_year')?.setValue(year);
+    }
+
+    private clearModel(formIndex: number): void {
+      this.form.get('vehicles')?.get(formIndex.toString())?.get('vehicle_model_id')?.setValue("");
+      this.form.get('vehicles')?.get(formIndex.toString())?.get('vehicle_year')?.setValue(null);
+    }
     onMakeSelected($ev: MatSelectChange, formIndex: number): void {
       let makeid = $ev.value
       this.clearModel(formIndex);
@@ -141,31 +165,12 @@ export class VehiclesEstimateCalculatorComponent {
       this.setModelYear(formIndex);
     }
 
-    clearModel(formIndex: number): void {
-      this.form.get('vehicles')?.get(formIndex.toString())?.get('vehicle_model_id')?.setValue("");
-      this.form.get('vehicles')?.get(formIndex.toString())?.get('vehicle_year')?.setValue(null);
-    }
-
-    setModelYear(formIndex: number): void {
-      let makeId = this.form.get('vehicles')?.get(formIndex.toString())?.get('vehicle_make_id')?.value;
-      let modelId = this.form.get('vehicles')?.get(formIndex.toString())?.get('vehicle_model_id')?.value;
-      let year = this.vehicleModels()[makeId].find(model => model.id == modelId)?.year;
-      this.form.get('vehicles')?.get(formIndex.toString())?.get('vehicle_year')?.setValue(year);
-    }
-
     onCalculateVehicleEstimate(formIndex:number): void {
       this.calculateVehicleEstimate$$.next(formIndex)
     }
 
     onAddVehicle(): void {
-      this.vehicles.push(new FormGroup({
-        distance_unit: new FormControl("km"),
-        vehicle_make_id: new FormControl(""),
-        vehicle_model_id: new FormControl(""),
-        vehicle_year: new FormControl(null),
-        distance_value: new FormControl(""),
-        emissions: new FormControl(null),
-      }))
+      this.addVeichleRow(null);
     }
 
     onRemoveVehicle(formIndex: number): void {
