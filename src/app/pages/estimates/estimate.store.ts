@@ -1,6 +1,6 @@
 import { Observable } from "rxjs";
 import { createActionGroup, createFeature, createReducer, createSelector, emptyProps, on, props } from '@ngrx/store';
-import { TotalEstimate, VehicleMake, VehicleModel, VehiclesEstimate } from "src/app/interfaces/app.interface";
+import { BillingsEstimate, TotalEstimate, VehicleMake, VehicleModel, VehiclesEstimate } from "src/app/interfaces/app.interface";
 import { AppActions } from "src/app/app.store";
 
 export interface EstimateState {
@@ -35,6 +35,7 @@ export const EstimateActions = createActionGroup({
     'Loaded Models By Make': props<{ makeId: string, models: VehicleModel[] }>(),
     'Load Selected Estimate': props<TotalEstimate>(),
     'Sync Vehicles Estimate': props<{ vehiclesEstimate: VehiclesEstimate }>(),
+    'Sync Billings Estimate': props<{ billingsEstimate: BillingsEstimate }>(),
     'Estimate changed': emptyProps(),
     'Saving Estimate': props<TotalEstimate>(),
     'Resetting Estimate': emptyProps(),
@@ -62,13 +63,14 @@ export const estimateReducer = createReducer(
       }
     }
   })),
-  on(EstimateActions.loadSelectedEstimate, (state, { id, name, emissions, vehiclesEstimate  }) => ({
+  on(EstimateActions.loadSelectedEstimate, (state, { id, name, emissions, vehiclesEstimate, billingsEstimate  }) => ({
     ...state,
     selectedEstimate: {
       id,
       name,
       emissions,
-      vehiclesEstimate
+      vehiclesEstimate,
+      billingsEstimate
     },
     selectedEstimateUnsaved: false
   })),
@@ -79,6 +81,14 @@ export const estimateReducer = createReducer(
       vehiclesEstimate: vehiclesEstimate
     },
     selectedEstimateUnsaved: true
+  })),
+  on(EstimateActions.syncBillingsEstimate, (state, { billingsEstimate }) => ({
+    ...state,
+    selectedEstimate: {
+      ...state.selectedEstimate as TotalEstimate,
+      billingsEstimate: billingsEstimate,
+    },
+    selectedEstimateUnsaved: true,
   })),
   on(EstimateActions.savingEstimate, (state) => ({
     ...state,

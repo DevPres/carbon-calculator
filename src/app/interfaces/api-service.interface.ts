@@ -42,9 +42,20 @@ export interface ServiceVehicleEstimate {
   }
 }
 
-export interface ServiceVehicleEstimateRequest {
-  type: "vehicle";
-  distance_unit: string;
-  distance_value: number;
-  vehicle_model_id: string;
+export interface ServiceBillingEstimate {
+  data: {
+    id: string;
+    type: string;
+    attributes: {
+      country: string;
+      state: string;
+      electricity_unit: string;
+      electricity_value: number;
+      estimated_at: string;
+      carbon_g: number;
+      carbon_lb: number;
+      carbon_kg: number;
+      carbon_mt: number;
+    }
+  }
 }
