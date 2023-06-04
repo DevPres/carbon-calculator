@@ -68,6 +68,11 @@ export class EstimatesComponent {
     this.resetChanges();
   }
 
+  onDeleteEstimate(): void {
+    this.store.dispatch(EstimateActions.deletingEstimate({ id: this.id }));
+    this.router.navigate(['/home']);
+  }
+
   resetChanges() {
     this.store.dispatch(EstimateActions.resettingEstimate());
     this.resetChanges$.next()

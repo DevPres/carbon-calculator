@@ -36,12 +36,19 @@
                   mat-raised-button color="primary" (click)="onCalculateEstimate(i)">
                     Calcola emissioni
                 </button>
+
                 <mat-spinner [diameter]="50" *ngIf="isCalculatingEstimate().index == i">
                 </mat-spinner>
-                <span
-                  *ngIf=" isCalculatingEstimate().index !== i && form.get('vehicles')?.get(i.toString())?.get('emissions')?.value">
-                  {{ form.get('vehicles')?.get(i.toString())?.get('emissions')?.value }}
-                </span>
+
+                <mat-form-field appearance="outline" *ngIf=" isCalculatingEstimate().index !== i && form.get('vehicles')?.get(i.toString())?.get('emissions')?.value">
+                  <mat-label>Emissione (Kg): </mat-label>
+                  <input matInput
+                    readonly
+                    type="number"
+                    formControlName="emissions"/>
+                </mat-form-field>
+
+
 
                 <button mat-mini-fab (click)="onRemoveRow(i)">
                   <mat-icon class="add-remove-btn">delete</mat-icon>

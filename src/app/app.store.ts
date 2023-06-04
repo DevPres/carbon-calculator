@@ -61,6 +61,10 @@ export const appReducer = createReducer(
     })
 
   }),
+  on(EstimateActions.deletingEstimate, (state, { id }) => ({
+    ...state,
+    estimates: state.estimates.filter(estimate => estimate.id !== id),
+  })),
   on(EstimateActions.loadSelectedEstimate, (state, { id }) => ({
     ...state,
     selectedEstimateId: id,

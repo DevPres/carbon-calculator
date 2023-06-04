@@ -40,6 +40,7 @@ export const EstimateActions = createActionGroup({
     'Estimate changed': emptyProps(),
     'Saving Estimate': props<TotalEstimate>(),
     'Resetting Estimate': emptyProps(),
+    'Deleting Estimate': props<{ id: string }>(),
   },
 });
 
@@ -114,6 +115,7 @@ export const estimateReducer = createReducer(
     },
     selectedEstimateUnsaved: false,
   })),
+
 );
 
   export const estimateFeature = createFeature({
