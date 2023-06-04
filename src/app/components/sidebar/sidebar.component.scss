@@ -10,6 +10,8 @@
 
   .sidebar-content {
     width: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
 
     .sidebar-content-toggle-row {
       text-align: right;

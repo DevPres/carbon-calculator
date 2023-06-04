@@ -47,9 +47,12 @@ import { MatIconModule } from '@angular/material/icon';
     }
 
     @media (min-width: 768px) {
-      .layout .mat-drawer {
-        max-width: 300px;
-        width: 25%;
+      .layout {
+
+        .mat-drawer {
+          max-width: 300px;
+          width: 25%;
+        }
 
         .sidebar-toggle-row {
           display: none;
