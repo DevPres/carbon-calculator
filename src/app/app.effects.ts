@@ -30,6 +30,8 @@ export const createEmptyEstimate = createEffect(
           billsEstimate: {
             type: CalculatorEnum.bills,
             totalEmissions: 0,
+            totalBills: 0,
+            totalElectricityMwh: 0,
             bills: []
           }
       })

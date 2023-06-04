@@ -50,6 +50,10 @@ export class BillsEstimateCalculatorComponent {
     get billsEstimate(): BillsEstimate {
       return ({
         type: CalculatorEnum.bills,
+        totalBills: this.bills.length,
+        totalElectricityMwh: this.bills.value.reduce((acc: number, bill: BillEstimate) => {
+          return acc + bill.electricity_value;
+        }, 0),
         totalEmissions: this.totalEmissions,
         bills: this.bills.value
       })

@@ -30,6 +30,8 @@ export interface VehicleEstimate {
 
 export interface BillsEstimate extends EstimateBase {
   type: CalculatorEnum.bills;
+  totalBills: number;
+  totalElectricityMwh: number;
   bills: BillEstimate[];
 }
 
