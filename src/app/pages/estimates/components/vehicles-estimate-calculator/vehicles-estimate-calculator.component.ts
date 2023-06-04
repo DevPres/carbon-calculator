@@ -60,6 +60,11 @@ export class VehiclesEstimateCalculatorComponent {
         vehicles: this.vehicles.value
       })
     }
+
+    get lastRowIsEmpty(): boolean {
+      let lastRow = this.vehicles.at(-1).value;
+      return !lastRow.vehicle_make_id.length && !lastRow.distance_value || false
+    }
     private readonly store = inject(Store);
     private readonly apiService = inject(EstimatesApiService);
     private readonly destroyRef = inject(DestroyRef);
@@ -105,7 +110,7 @@ export class VehiclesEstimateCalculatorComponent {
 
       ).subscribe(() => {
         console.log('reset changes')
-        this.createForm(this.initialData, true)
+        this.createForm(this.initialData)
       })
 
       this.vehicles.valueChanges.pipe(
@@ -127,15 +132,15 @@ export class VehiclesEstimateCalculatorComponent {
 
     }
 
-    private addVeichleRow(veichle: VehicleEstimate | null): void {
+    private addVeichleRow(veichle: VehicleEstimate | null, emit = false): void {
       this.vehicles.push(new FormGroup({
         distance_unit: new FormControl("km"),
         vehicle_make_id: new FormControl(veichle?.vehicle_make_id || ""),
         vehicle_model_id: new FormControl(veichle?.vehicle_model_id || ""),
         vehicle_year: new FormControl(veichle?.vehicle_year || null),
-        distance_value: new FormControl(veichle?.distance_value || ""),
+        distance_value: new FormControl(veichle?.distance_value || 0),
         emissions: new FormControl(veichle?.emissions || null),
-      }),{emitEvent: false})
+      }),{emitEvent: emit})
 
     }
 
@@ -170,6 +175,7 @@ export class VehiclesEstimateCalculatorComponent {
     }
 
     onAddVehicle(): void {
+      if(this.lastRowIsEmpty) return;
       this.addVeichleRow(null);
     }
 
