@@ -13,7 +13,6 @@ import { Action, Store } from '@ngrx/store';
 import { EstimateActions, estimateFeature } from '@pages/estimates/estimate.store';
 import { FilterByMakeId } from '@pages/estimates/pipes/filter-by-make-id.pipe';
 import { untildestroyed } from 'src/app/utils/function';
-import { ServiceVehicleEstimateRequest } from 'src/app/interfaces/api-service.interface';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -69,26 +68,23 @@ export class VehiclesEstimateCalculatorComponent {
     private readonly apiService = inject(EstimatesApiService);
     private readonly destroyRef = inject(DestroyRef);
 
-
-    private takeUntilDestroyed = untildestroyed();
-
-    private calculateVehicleEstimate$$ = new ReplaySubject<number>();
+    private calculateEstimate$$ = new ReplaySubject<number>();
 
     isCalculatingEstimate: WritableSignal<{ calculating: boolean, index: number | null }> = signal({calculating: false, index: null});
     vehicleMakes = this.store.selectSignal(estimateFeature.selectVehicleMakes);
     vehicleModels = this.store.selectSignal(estimateFeature.selectVehicleModels);
-    initialData: any;
+    initialData!: VehicleEstimate[];
 
 
     ngOnInit(): void {
 
-      this.calculateVehicleEstimate$$.pipe(
+      this.calculateEstimate$$.pipe(
         takeUntilDestroyed(this.destroyRef),
         tap((formIndex) => this.isCalculatingEstimate.mutate(v=> {v.calculating = true; v.index = formIndex})),
         switchMap(formIndex => {
-          let { type, distance_unit, distance_value, vehicle_model_id } = this.form.get('vehicles')?.get(formIndex.toString())?.value;
+          let { distance_unit, distance_value, vehicle_model_id } = this.form.get('vehicles')?.get(formIndex.toString())?.value;
 
-          return this.apiService.calculateVehicleEmissions({ type, distance_unit, distance_value, vehicle_model_id}).pipe(
+          return this.apiService.calculateVehicleEmissions({ distance_unit, distance_value, vehicle_model_id}).pipe(
             retry(3),
             tap(estimate => {
               let estimateKg = estimate.data.attributes.carbon_kg;
@@ -120,26 +116,26 @@ export class VehiclesEstimateCalculatorComponent {
     }
 
 
-    private createForm(vehicles: VehicleEstimate[], emit = false): void {
+    private createForm(data: VehicleEstimate[], emit = false): void {
       this.vehicles.clear({emitEvent: emit});
-      if(vehicles.length) {
-        vehicles.forEach(vehicle => {
-          this.addVeichleRow(vehicle);
+      if(data.length) {
+        data.forEach(vehicle => {
+          this.addRow(vehicle);
         })
       } else {
-        this.addVeichleRow(null);
+        this.addRow(null);
       }
 
     }
 
-    private addVeichleRow(veichle: VehicleEstimate | null, emit = false): void {
+    private addRow(data: VehicleEstimate | null, emit = false): void {
       this.vehicles.push(new FormGroup({
         distance_unit: new FormControl("km"),
-        vehicle_make_id: new FormControl(veichle?.vehicle_make_id || ""),
-        vehicle_model_id: new FormControl(veichle?.vehicle_model_id || ""),
-        vehicle_year: new FormControl(veichle?.vehicle_year || null),
-        distance_value: new FormControl(veichle?.distance_value || 0),
-        emissions: new FormControl(veichle?.emissions || null),
+        vehicle_make_id: new FormControl(data?.vehicle_make_id || ""),
+        vehicle_model_id: new FormControl(data?.vehicle_model_id || ""),
+        vehicle_year: new FormControl(data?.vehicle_year || null),
+        distance_value: new FormControl(data?.distance_value || 0),
+        emissions: new FormControl(data?.emissions || null),
       }),{emitEvent: emit})
 
     }
@@ -170,16 +166,16 @@ export class VehiclesEstimateCalculatorComponent {
       this.setModelYear(formIndex);
     }
 
-    onCalculateVehicleEstimate(formIndex:number): void {
-      this.calculateVehicleEstimate$$.next(formIndex)
+    onCalculateEstimate(formIndex:number): void {
+      this.calculateEstimate$$.next(formIndex)
     }
 
-    onAddVehicle(): void {
+    onAddRow(): void {
       if(this.lastRowIsEmpty) return;
-      this.addVeichleRow(null);
+      this.addRow(null);
     }
 
-    onRemoveVehicle(formIndex: number): void {
+    onRemoveRow(formIndex: number): void {
       this.vehicles.removeAt(formIndex);
     }
 }
