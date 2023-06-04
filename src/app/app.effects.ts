@@ -19,7 +19,7 @@ export const createEmptyEstimate = createEffect(
         return AppActions.addingEstimate({
           id: generateUUID(),
           name: 'Nuova stima',
-          emissions: 0,
+          emissionsKg: 0,
           vehiclesEstimate: {
             type: CalculatorEnum.vehicles,
             totalVehicles: 0,
