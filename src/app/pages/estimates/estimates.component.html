@@ -1,4 +1,5 @@
 <mat-card class="estimates-tab-group">
+  <app-estimate-preview></app-estimate-preview>
   <mat-tab-group animationDuration="1000ms">
     <mat-tab label="Veicoli">
         <app-vehicles-estimate-calculator [resetChanges$]="resetChanges$"  [estimate]="estimate$ | async"></app-vehicles-estimate-calculator>
