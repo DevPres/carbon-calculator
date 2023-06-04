@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, Input, WritableSignal, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { CalculatorComponent } from '../calculator.abstract';
 import { CalculatorEnum, TotalEstimate, VehicleEstimate, VehiclesEstimate } from 'src/app/interfaces/app.interface';
 import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
