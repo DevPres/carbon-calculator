@@ -1,13 +1,13 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, DestroyRef, Input, WritableSignal, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CalculatorEnum, TotalEstimate, VehicleEstimate, VehiclesEstimate } from 'src/app/interfaces/app.interface';
-import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input'
 import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { EstimatesApiService } from '../../estimates.service';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
-import { EMPTY, ReplaySubject, catchError, debounceTime, finalize, retry, switchMap, takeUntil, tap } from 'rxjs';
+import { EMPTY, ReplaySubject, catchError, debounceTime, finalize, of, retry, switchMap, takeUntil, tap } from 'rxjs';
 import { Action, Store } from '@ngrx/store';
 import { EstimateActions, estimateFeature } from '@pages/estimates/estimate.store';
 import { FilterByMakeId } from '@pages/estimates/pipes/filter-by-make-id.pipe';
@@ -15,6 +15,7 @@ import { untildestroyed } from 'src/app/utils/function';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { AppActions } from 'src/app/app.store';
 
 
 @Component({
@@ -28,7 +29,6 @@ import { MatButtonModule } from '@angular/material/button';
 export class VehiclesEstimateCalculatorComponent {
 
     @Input({required: true}) set estimate(value: TotalEstimate | null) {
-      console.log('estimate input', value)
        let vehicles = value && value.vehiclesEstimate.vehicles || [];
       this.createForm(vehicles)
       this.initialData = vehicles;
@@ -95,8 +95,7 @@ export class VehiclesEstimateCalculatorComponent {
               let estimateKg = estimate.data.attributes.carbon_kg;
               this.form.get('vehicles')?.get(formIndex.toString())?.get('emissions')?.setValue(estimateKg);
             }),
-            //HANDLE ERROR
-            catchError(err => EMPTY),
+            catchError((err) => of(this.store.dispatch(AppActions.occuringError()))),
             finalize(() =>
               setTimeout(() =>
                      this.isCalculatingEstimate.mutate(v => {v.calculating = false; v.index = null})
@@ -110,7 +109,6 @@ export class VehiclesEstimateCalculatorComponent {
         takeUntilDestroyed(this.destroyRef),
 
       ).subscribe(() => {
-        console.log('reset changes')
         this.createForm(this.initialData);
         this.syncEstimate();
         this.cd.detectChanges()
@@ -138,10 +136,10 @@ export class VehiclesEstimateCalculatorComponent {
     private addRow(data: VehicleEstimate | null, emit = false): void {
       this.vehicles.push(new FormGroup({
         distance_unit: new FormControl("km"),
-        vehicle_make_id: new FormControl(data?.vehicle_make_id || ""),
-        vehicle_model_id: new FormControl(data?.vehicle_model_id || ""),
+        vehicle_make_id: new FormControl(data?.vehicle_make_id || "", [Validators.required]),
+        vehicle_model_id: new FormControl(data?.vehicle_model_id || "", [Validators.required]),
         vehicle_year: new FormControl(data?.vehicle_year || null),
-        distance_value: new FormControl(data?.distance_value || null),
+        distance_value: new FormControl(data?.distance_value || null, [Validators.required, Validators.min(1)]),
         emissions: new FormControl(data?.emissions || null),
       }),{emitEvent: emit})
 

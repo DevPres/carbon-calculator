@@ -40,7 +40,7 @@ import { MatIconModule } from '@angular/material/icon';
 
       .mat-drawer-content {
         height: 100%;
-        background-color: var(--color-accent-dark);
+        background-color: var(--color-accent);
         padding: 16px;
         box-sizing: border-box;
       }

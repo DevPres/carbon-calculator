@@ -33,6 +33,7 @@
 
                 <button
                   *ngIf=" isCalculatingEstimate().index !== i && form.get('vehicles')?.get(i.toString())?.get('emissions')?.value === null"
+                  [disabled]="!form.get('vehicles')?.get(i.toString())?.valid"
                   mat-raised-button color="primary" (click)="onCalculateEstimate(i)">
                     Calcola emissioni
                 </button>

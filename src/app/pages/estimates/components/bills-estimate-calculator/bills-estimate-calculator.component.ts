@@ -9,12 +9,13 @@ import { MatIconModule } from '@angular/material/icon';
 
 import { Store } from '@ngrx/store';
 import { EstimatesApiService } from '@pages/estimates/estimates.service';
-import { EMPTY, ReplaySubject, catchError, debounceTime, finalize, retry, switchMap, tap } from 'rxjs';
-import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { EMPTY, ReplaySubject, catchError, debounceTime, finalize, of, retry, switchMap, tap } from 'rxjs';
+import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { EstimateActions } from '@pages/estimates/estimate.store';
 import { MatButtonModule } from '@angular/material/button';
 import { COUNTRIES } from 'src/app/utils/countries.model';
+import { AppActions } from 'src/app/app.store';
 
 @Component({
   selector: 'app-bills-estimate-calculator',
@@ -88,7 +89,7 @@ export class BillsEstimateCalculatorComponent {
               let estimateKg = estimate.data.attributes.carbon_kg;
               this.form.get('bills')?.get(formIndex.toString())?.get('emissions')?.setValue(estimateKg);
             }),
-            catchError((err) => EMPTY),
+            catchError((err) => of(this.store.dispatch(AppActions.occuringError()))),
             finalize(() =>
               setTimeout(() =>
                 this.isCalculatingEstimate.mutate(v => {v.calculating = false; v.index = null})
@@ -125,8 +126,8 @@ export class BillsEstimateCalculatorComponent {
 
    private addRow(data: BillEstimate | null, emit = false): void {
       this.bills.push(new FormGroup({
-        country: new FormControl(data?.country ||""),
-        electricity_value: new FormControl(data?.electricity_value || 0),
+        country: new FormControl(data?.country ||"", [Validators.required]),
+        electricity_value: new FormControl(data?.electricity_value || 0, [Validators.required, Validators.min(0)]),
         emissions: new FormControl(data?.emissions || null),
       }),{emitEvent: emit})
   }
