@@ -4,7 +4,7 @@ export interface TotalEstimate {
   description?: string;
   emissions: number;
   vehiclesEstimate: VehiclesEstimate;
-  billingsEstimate: BillingsEstimate;
+  billsEstimate: BillsEstimate;
 };
 
 export interface EstimateBase {
@@ -28,12 +28,12 @@ export interface VehicleEstimate {
   emissions: number;
 }
 
-export interface BillingsEstimate extends EstimateBase {
-  type: CalculatorEnum.billings;
-  billings: BillingEstimate[];
+export interface BillsEstimate extends EstimateBase {
+  type: CalculatorEnum.bills;
+  bills: BillEstimate[];
 }
 
-export interface BillingEstimate {
+export interface BillEstimate {
   electricity_unit: string;
   electricity_value: number;
   country: string;
@@ -56,7 +56,7 @@ export interface VehicleModel {
 
 export enum CalculatorEnum {
   vehicles = 'vehicles',
-  billings = 'billings'
+  bills = 'bills'
 }
 
 export type CalculatorType = `${CalculatorEnum}`;

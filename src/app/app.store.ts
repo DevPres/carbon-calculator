@@ -25,7 +25,7 @@ export const AppActions = createActionGroup({
 
 export const appReducer = createReducer(
   initialState,
-  on(AppActions.addingEstimate, (state, { id, name, description, emissions, vehiclesEstimate, billingsEstimate } ) =>
+  on(AppActions.addingEstimate, (state, { id, name, description, emissions, vehiclesEstimate, billsEstimate } ) =>
     [
       ...state,
       {
@@ -34,13 +34,13 @@ export const appReducer = createReducer(
         description,
         emissions,
         vehiclesEstimate,
-        billingsEstimate
+        billsEstimate
       }
     ],
   ),
-  on(EstimateActions.savingEstimate, (state, {id, name, description, emissions, vehiclesEstimate, billingsEstimate}) => {
+  on(EstimateActions.savingEstimate, (state, {id, name, description, emissions, vehiclesEstimate, billsEstimate}) => {
     const oldEstimate = state.find(estimate => estimate.id === id);
-    const newEstimate = { id, name, description, emissions, vehiclesEstimate, billingsEstimate } as TotalEstimate;
+    const newEstimate = { id, name, description, emissions, vehiclesEstimate, billsEstimate } as TotalEstimate;
     if (oldEstimate) {
       return state.map(estimate => estimate.id === id ? newEstimate : estimate);
     }

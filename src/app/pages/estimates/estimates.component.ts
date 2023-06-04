@@ -11,12 +11,12 @@ import { EstimateActions, estimateFeature } from './estimate.store';
 import { untildestroyed } from 'src/app/utils/function';
 import { TotalEstimate } from 'src/app/interfaces/app.interface';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { BillingsEstimateCalculatorComponent } from './components/billings-estimate-calculator/billings-estimate-calculator.component';
+import { BillsEstimateCalculatorComponent } from './components/bills-estimate-calculator/bills-estimate-calculator.component';
 
 @Component({
   selector: 'app-estimates',
   standalone: true,
-  imports: [CommonModule, MatTabsModule, MatCardModule, VehiclesEstimateCalculatorComponent, BillingsEstimateCalculatorComponent ],
+  imports: [CommonModule, MatTabsModule, MatCardModule, VehiclesEstimateCalculatorComponent, BillsEstimateCalculatorComponent ],
   templateUrl: './estimates.component.html',
   styleUrls: ['./estimates.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, DestroyRef, Input, WritableSignal, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { BillingEstimate, BillingsEstimate, CalculatorEnum, TotalEstimate } from 'src/app/interfaces/app.interface';
+import { BillEstimate, BillsEstimate, CalculatorEnum, TotalEstimate } from 'src/app/interfaces/app.interface';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
@@ -17,46 +17,46 @@ import { MatButtonModule } from '@angular/material/button';
 import { COUNTRIES } from 'src/app/utils/countries.model';
 
 @Component({
-  selector: 'app-billings-estimate-calculator',
+  selector: 'app-bills-estimate-calculator',
   standalone: true,
   imports: [CommonModule, FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatProgressSpinnerModule, MatIconModule, MatButtonModule],
-  templateUrl: './billings-estimate-calculator.component.html',
-  styleUrls: ['./billings-estimate-calculator.component.scss'],
+  templateUrl: './bills-estimate-calculator.component.html',
+  styleUrls: ['./bills-estimate-calculator.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class BillingsEstimateCalculatorComponent {
+export class BillsEstimateCalculatorComponent {
     @Input({required: true}) set estimate(value: TotalEstimate | null) {
-      let billings = value && value.billingsEstimate.billings || [];
-      this.createForm(billings)
-      this.initialData = billings;
+      let bills = value && value.billsEstimate.bills || [];
+      this.createForm(bills)
+      this.initialData = bills;
     }
 
     @Input() resetChanges$!: ReplaySubject<void>;
 
     public form = new FormGroup({
-      billings: new FormArray([])
+      bills: new FormArray([])
     });
 
-    get billings(): FormArray {
-      return this.form.get('billings') as FormArray;
+    get bills(): FormArray {
+      return this.form.get('bills') as FormArray;
     }
 
     get totalEmissions(): number {
-      return this.billings.value.reduce((acc: number, billing: BillingEstimate) => {
-        return acc + billing.emissions;
+      return this.bills.value.reduce((acc: number, bill: BillEstimate) => {
+        return acc + bill.emissions;
       }, 0)
     }
 
-    get billingsEstimate(): BillingsEstimate {
+    get billsEstimate(): BillsEstimate {
       return ({
-        type: CalculatorEnum.billings,
+        type: CalculatorEnum.bills,
         totalEmissions: this.totalEmissions,
-        billings: this.billings.value
+        bills: this.bills.value
       })
     }
 
     get lastRowIsEmpty(): boolean {
-      let lastRow = this.billings.at(-1).value;
+      let lastRow = this.bills.at(-1).value;
       return !lastRow.country.length && !lastRow.electricity_value || false
     }
 
@@ -70,19 +70,19 @@ export class BillingsEstimateCalculatorComponent {
     isCalculatingEstimate: WritableSignal<{ calculating: boolean, index: number | null }> = signal({calculating: false, index: null});
 
     countries: {code: string, name: string}[] = COUNTRIES;
-    initialData: BillingEstimate[] = [];
+    initialData: BillEstimate[] = [];
 
     ngOnInit(): void {
       this.calculateEstimate$$.pipe(
         takeUntilDestroyed(this.destroyRef),
         tap((formIndex) => this.isCalculatingEstimate.mutate(v=> {v.calculating = true; v.index = formIndex})),
         switchMap((formIndex) => {
-          let { electricity_value, country } = this.billings.at(formIndex).value;
-          return this.apiService.calculateBillingEmissions({electricity_value, country}).pipe(
+          let { electricity_value, country } = this.bills.at(formIndex).value;
+          return this.apiService.calculateBillEmissions({electricity_value, country}).pipe(
             retry(3),
             tap(estimate => {
               let estimateKg = estimate.data.attributes.carbon_kg;
-              this.form.get('billings')?.get(formIndex.toString())?.get('emissions')?.setValue(estimateKg);
+              this.form.get('bills')?.get(formIndex.toString())?.get('emissions')?.setValue(estimateKg);
             }),
             catchError((err) => EMPTY),
             finalize(() =>
@@ -102,14 +102,14 @@ export class BillingsEstimateCalculatorComponent {
         this.cd.detectChanges()
       })
 
-      this.billings.valueChanges.pipe(
+      this.bills.valueChanges.pipe(
         takeUntilDestroyed(this.destroyRef),
         debounceTime(500),
       ).subscribe(()=>this.syncEstimate());
   }
 
-   private createForm(data: BillingEstimate[], emit = false): void {
-      this.billings.clear({emitEvent: emit});
+   private createForm(data: BillEstimate[], emit = false): void {
+      this.bills.clear({emitEvent: emit});
       if(data.length) {
         data.forEach(vehicle => {
           this.addRow(vehicle);
@@ -119,8 +119,8 @@ export class BillingsEstimateCalculatorComponent {
       }
    }
 
-   private addRow(data: BillingEstimate | null, emit = false): void {
-      this.billings.push(new FormGroup({
+   private addRow(data: BillEstimate | null, emit = false): void {
+      this.bills.push(new FormGroup({
         country: new FormControl(""),
         electricity_value: new FormControl(data?.electricity_value || 0),
         emissions: new FormControl(data?.emissions || null),
@@ -128,7 +128,7 @@ export class BillingsEstimateCalculatorComponent {
   }
 
   private syncEstimate(): void {
-      this.store.dispatch(EstimateActions.syncBillingsEstimate({ billingsEstimate: this.billingsEstimate }));
+      this.store.dispatch(EstimateActions.syncBillsEstimate({ billsEstimate: this.billsEstimate }));
   }
 
   onCalculateEstimate(formIndex:number): void {
@@ -141,7 +141,7 @@ export class BillingsEstimateCalculatorComponent {
   }
 
   onRemoveRow(formIndex: number): void {
-    this.billings.removeAt(formIndex);
+    this.bills.removeAt(formIndex);
   }
 
 

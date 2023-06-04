@@ -1,6 +1,6 @@
 import { Observable } from "rxjs";
 import { createActionGroup, createFeature, createReducer, createSelector, emptyProps, on, props } from '@ngrx/store';
-import { BillingsEstimate, TotalEstimate, VehicleMake, VehicleModel, VehiclesEstimate } from "src/app/interfaces/app.interface";
+import { BillsEstimate, TotalEstimate, VehicleMake, VehicleModel, VehiclesEstimate } from "src/app/interfaces/app.interface";
 import { AppActions } from "src/app/app.store";
 
 export interface EstimateState {
@@ -35,7 +35,7 @@ export const EstimateActions = createActionGroup({
     'Loaded Models By Make': props<{ makeId: string, models: VehicleModel[] }>(),
     'Load Selected Estimate': props<TotalEstimate>(),
     'Sync Vehicles Estimate': props<{ vehiclesEstimate: VehiclesEstimate }>(),
-    'Sync Billings Estimate': props<{ billingsEstimate: BillingsEstimate }>(),
+    'Sync Bills Estimate': props<{ billsEstimate: BillsEstimate }>(),
     'Estimate changed': emptyProps(),
     'Saving Estimate': props<TotalEstimate>(),
     'Resetting Estimate': emptyProps(),
@@ -63,14 +63,14 @@ export const estimateReducer = createReducer(
       }
     }
   })),
-  on(EstimateActions.loadSelectedEstimate, (state, { id, name, emissions, vehiclesEstimate, billingsEstimate  }) => ({
+  on(EstimateActions.loadSelectedEstimate, (state, { id, name, emissions, vehiclesEstimate, billsEstimate  }) => ({
     ...state,
     selectedEstimate: {
       id,
       name,
       emissions,
       vehiclesEstimate,
-      billingsEstimate
+      billsEstimate
     },
     selectedEstimateUnsaved: false
   })),
@@ -82,11 +82,11 @@ export const estimateReducer = createReducer(
     },
     selectedEstimateUnsaved: true
   })),
-  on(EstimateActions.syncBillingsEstimate, (state, { billingsEstimate }) => ({
+  on(EstimateActions.syncBillsEstimate, (state, { billsEstimate }) => ({
     ...state,
     selectedEstimate: {
       ...state.selectedEstimate as TotalEstimate,
-      billingsEstimate: billingsEstimate,
+      billsEstimate: billsEstimate,
     },
     selectedEstimateUnsaved: true,
   })),

@@ -1,7 +1,7 @@
-<div class="billings-estimate-form" [formGroup]="form">
-    <ng-container formArrayName="billings">
-        <ng-container *ngFor="let billing of billings.controls; let i = index">
-            <div class="billings-estimate-form-row" [formGroupName]="i">
+<div class="bills-estimate-form" [formGroup]="form">
+    <ng-container formArrayName="bills">
+        <ng-container *ngFor="let bill of bills.controls; let i = index">
+            <div class="bills-estimate-form-row" [formGroupName]="i">
 
                 <mat-form-field appearance="fill">
                     <mat-select formControlName="country" placeholder="Nazione">
@@ -21,15 +21,15 @@
 
 
                 <button
-                  *ngIf=" isCalculatingEstimate().index !== i && form.get('billings')?.get(i.toString())?.get('emissions')?.value === null"
+                  *ngIf=" isCalculatingEstimate().index !== i && form.get('bills')?.get(i.toString())?.get('emissions')?.value === null"
                   mat-raised-button color="primary" (click)="onCalculateEstimate(i)">
                     Calcola emissioni
                 </button>
                 <mat-spinner *ngIf="isCalculatingEstimate().index == i">
                 </mat-spinner>
                 <span
-                  *ngIf=" isCalculatingEstimate().index !== i && form.get('billings')?.get(i.toString())?.get('emissions')?.value">
-                  {{ form.get('billings')?.get(i.toString())?.get('emissions')?.value }}
+                  *ngIf=" isCalculatingEstimate().index !== i && form.get('bills')?.get(i.toString())?.get('emissions')?.value">
+                  {{ form.get('bills')?.get(i.toString())?.get('emissions')?.value }}
                 </span>
 
                 <button mat-mini-fab (click)="onRemoveRow(i)">

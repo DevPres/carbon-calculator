@@ -30,12 +30,12 @@ export class EstimatesApiService {
     })
   }
 
-  calculateBillingEmissions(billing: { country: string,  electricity_value: number }): Observable<ServiceBillingEstimate> {
+  calculateBillEmissions(bill: { country: string,  electricity_value: number }): Observable<ServiceBillingEstimate> {
     return this.http.post<ServiceBillingEstimate>(`${this.baseUrl}/estimates`, {
       type: "electricity",
-      country: billing.country,
+      country: bill.country,
       electricity_unit: 'mwh',
-      electricity_value: billing.electricity_value
+      electricity_value: bill.electricity_value
     })
   }
 
