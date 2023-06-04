@@ -1,0 +1,27 @@
+.content-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+  width: 100%;
+  height: 100%;
+
+  .mat-mdc-card {
+    width: 50%;
+    min-width: 300px;
+    margin: auto;
+    padding: 50px;
+
+    .home-card-content {
+
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+
+      button {
+        width: 100px
+      }
+    }
+  }
+}
