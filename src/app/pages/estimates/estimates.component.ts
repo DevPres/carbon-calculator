@@ -5,7 +5,7 @@ import { MatCardModule } from '@angular/material/card';
 import { VehiclesEstimateCalculatorComponent } from './components/vehicles-estimate-calculator/vehicles-estimate-calculator.component';
 import { Store } from '@ngrx/store';
 import { AppActions, selectEstimates } from 'src/app/app.store';
-import { Observable, ReplaySubject, first, map, shareReplay, tap } from 'rxjs';
+import { Observable, ReplaySubject, filter, first, map, shareReplay, tap } from 'rxjs';
 import { Router } from '@angular/router';
 import { EstimateActions, estimateFeature } from './estimate.store';
 import { untildestroyed } from 'src/app/utils/function';
@@ -34,7 +34,6 @@ export class EstimatesComponent {
   readonly estimate$: Observable<TotalEstimate | null> = this.store.select(selectEstimates).pipe(
     tap(() => console.log('passo select' )),
     map(estimates => estimates.find(estimate => estimate.id === this.id) || null),
-    shareReplay(),
   );
 
   readonly selectedEstimate: Signal<TotalEstimate | null> = this.store.selectSignal(estimateFeature.selectSelectedEstimate);
@@ -44,8 +43,10 @@ export class EstimatesComponent {
 
 
   ngOnInit(): void {
-    console.log('ngOnInit EstimatesComponent')
-    this.store.dispatch(EstimateActions.loadingVehicleMakes());
+    this.store.select(estimateFeature.selectFormConfig).pipe(
+      takeUntilDestroyed(this.destroyRef),
+      filter(formConfig => !formConfig.vehicleMakes.length)
+    ).subscribe(() => this.store.dispatch(EstimateActions.loadingVehicleMakes()));
 
     this.estimate$.pipe(
       first(),
