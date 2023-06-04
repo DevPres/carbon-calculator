@@ -5,18 +5,19 @@ import { MatCardModule } from '@angular/material/card';
 import { VehiclesEstimateCalculatorComponent } from './components/vehicles-estimate-calculator/vehicles-estimate-calculator.component';
 import { Store } from '@ngrx/store';
 import { AppActions, selectEstimates } from 'src/app/app.store';
-import { Observable, ReplaySubject, first, map, tap } from 'rxjs';
+import { Observable, ReplaySubject, first, map, shareReplay, tap } from 'rxjs';
 import { Router } from '@angular/router';
 import { EstimateActions, estimateFeature } from './estimate.store';
 import { untildestroyed } from 'src/app/utils/function';
 import { TotalEstimate } from 'src/app/interfaces/app.interface';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BillsEstimateCalculatorComponent } from './components/bills-estimate-calculator/bills-estimate-calculator.component';
+import { EstimatePreviewComponent } from './components/estimate-preview/estimate-preview.component';
 
 @Component({
   selector: 'app-estimates',
   standalone: true,
-  imports: [CommonModule, MatTabsModule, MatCardModule, VehiclesEstimateCalculatorComponent, BillsEstimateCalculatorComponent ],
+  imports: [CommonModule, MatTabsModule, MatCardModule, VehiclesEstimateCalculatorComponent, BillsEstimateCalculatorComponent, EstimatePreviewComponent ],
   templateUrl: './estimates.component.html',
   styleUrls: ['./estimates.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -33,6 +34,7 @@ export class EstimatesComponent {
   readonly estimate$: Observable<TotalEstimate | null> = this.store.select(selectEstimates).pipe(
     tap(() => console.log('passo select' )),
     map(estimates => estimates.find(estimate => estimate.id === this.id) || null),
+    shareReplay(),
   );
 
   readonly selectedEstimate: Signal<TotalEstimate | null> = this.store.selectSignal(estimateFeature.selectSelectedEstimate);
