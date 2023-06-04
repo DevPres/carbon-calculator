@@ -36,6 +36,7 @@ export const EstimateActions = createActionGroup({
     'Load Selected Estimate': props<TotalEstimate>(),
     'Sync Vehicles Estimate': props<{ vehiclesEstimate: VehiclesEstimate }>(),
     'Sync Bills Estimate': props<{ billsEstimate: BillsEstimate }>(),
+    'Updated Total Emissions': emptyProps(),
     'Estimate changed': emptyProps(),
     'Saving Estimate': props<TotalEstimate>(),
     'Resetting Estimate': emptyProps(),
@@ -90,20 +91,14 @@ export const estimateReducer = createReducer(
     },
     selectedEstimateUnsaved: true,
   })),
-  on(EstimateActions.syncBillsEstimate, EstimateActions.syncVehiclesEstimate, (state, action ) => {
-    let emissions = state.selectedEstimate?.emissionsKg || 0;
-    if('vehiclesEstimate' in action) {
-      emissions += action.vehiclesEstimate.totalEmissions;
-      console.log('emissions', emissions)
-    }
-    if('billsEstimate' in action) {
-      emissions += action.billsEstimate.totalEmissions;
-    }
+  on(EstimateActions.updatedTotalEmissions, (state) => {
+    let emissionsVehicles = state.selectedEstimate?.vehiclesEstimate?.totalEmissions || 0;
+    let emissionsBills = state.selectedEstimate?.billsEstimate?.totalEmissions || 0;
     return ({
       ...state,
       selectedEstimate: {
         ...state.selectedEstimate as TotalEstimate,
-        emissionsKg: emissions
+        emissionsKg: emissionsVehicles + emissionsBills
       }
     })
   }),

@@ -73,4 +73,14 @@ export const loadVehicleModel = createEffect(
   { functional: true }
 );
 
-
+export const updateTotalEmissions = createEffect(
+  (
+    actions$ = inject(Actions),
+  ) => {
+    return actions$.pipe(
+      ofType(EstimateActions.syncVehiclesEstimate, EstimateActions.syncBillsEstimate),
+      map(() => EstimateActions.updatedTotalEmissions()),
+    );
+  },
+  { functional: true }
+)
