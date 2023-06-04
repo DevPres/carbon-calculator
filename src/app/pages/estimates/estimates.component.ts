@@ -41,6 +41,7 @@ export class EstimatesComponent {
 
 
   ngOnInit(): void {
+    console.log('ngOnInit EstimatesComponent')
     this.store.dispatch(EstimateActions.loadingVehicleMakes());
 
     this.estimate$.pipe(
@@ -55,7 +56,7 @@ export class EstimatesComponent {
   }
 
   onSaveChanges(): void {
-    this.store.dispatch(EstimateActions.saveEstimate(this.selectedEstimate() as TotalEstimate));
+    this.store.dispatch(EstimateActions.savingEstimate(this.selectedEstimate() as TotalEstimate));
   }
 
   onDeleteChanges(): void {
@@ -64,6 +65,7 @@ export class EstimatesComponent {
 
   resetChanges() {
     this.resetChanges$.next()
+    this.store.dispatch(EstimateActions.resettingEstimate());
   }
 
 }

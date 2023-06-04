@@ -16,7 +16,7 @@ export const initialState: TotalEstimate[] = [];
 export const AppActions = createActionGroup({
   source: '[Home Page]',
   events: {
-    'Add Estimate': props<TotalEstimate>(),
+    'Adding Estimate': props<TotalEstimate>(),
     'Removing Estimate': props<{ id: number }>(),
     'Creating Empty Estimate': emptyProps(),
   },
@@ -25,7 +25,7 @@ export const AppActions = createActionGroup({
 
 export const appReducer = createReducer(
   initialState,
-  on(AppActions.addEstimate, (state, { id, name, description, emissions, vehiclesEstimate } ) =>
+  on(AppActions.addingEstimate, (state, { id, name, description, emissions, vehiclesEstimate } ) =>
     [
       ...state,
       {
@@ -37,7 +37,7 @@ export const appReducer = createReducer(
       }
     ],
   ),
-  on(EstimateActions.saveEstimate, (state, {id, name, description, emissions, vehiclesEstimate}) => {
+  on(EstimateActions.savingEstimate, (state, {id, name, description, emissions, vehiclesEstimate}) => {
     const oldEstimate = state.find(estimate => estimate.id === id);
     const newEstimate = { id, name, description, emissions, vehiclesEstimate } as TotalEstimate;
     if (oldEstimate) {

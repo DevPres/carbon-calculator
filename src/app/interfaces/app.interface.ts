@@ -17,11 +17,11 @@ export interface VehiclesEstimate extends EstimateBase {
 }
 
 export interface VehicleEstimate {
+  distance_unit: string;
   distance_value: number;
   vehicle_make_id: string;
   vehicle_model_id: string;
   vehicle_year: number;
-  distance_unit: string;
   emissions: number;
 }
 

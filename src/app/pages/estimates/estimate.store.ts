@@ -36,8 +36,8 @@ export const EstimateActions = createActionGroup({
     'Load Selected Estimate': props<TotalEstimate>(),
     'Sync Vehicles Estimate': props<{ vehiclesEstimate: VehiclesEstimate }>(),
     'Estimate changed': emptyProps(),
-    'Save Estimate': props<TotalEstimate>(),
-    'Delete Changes': emptyProps(),
+    'Saving Estimate': props<TotalEstimate>(),
+    'Resetting Estimate': emptyProps(),
   },
 });
 
@@ -80,10 +80,14 @@ export const estimateReducer = createReducer(
     },
     selectedEstimateUnsaved: true
   })),
-  on(EstimateActions.saveEstimate, (state) => ({
+  on(EstimateActions.savingEstimate, (state) => ({
     ...state,
     selectedEstimateUnsaved: false
-  }))
+  })),
+  on(EstimateActions.resettingEstimate, (state) => ({
+    ...state,
+    selectedEstimateUnsaved: false,
+  })),
 );
 
   export const estimateFeature = createFeature({
