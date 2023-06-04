@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, WritableSignal, inject, signal } from '@angular/core';
 import { Observable, map, shareReplay } from 'rxjs';
-import { ServiceVehicleEstimate, ServiceVehicleEstimateRequest, ServiceVehicleMake, ServiceVehicleModel } from 'src/app/interfaces/api-service.interface';
+import { ServiceBillingEstimate, ServiceVehicleEstimate, ServiceVehicleMake, ServiceVehicleModel } from 'src/app/interfaces/api-service.interface';
 import { VehicleMake, VehicleModel } from 'src/app/interfaces/app.interface';
 
 @Injectable()
@@ -21,12 +21,21 @@ export class EstimatesApiService {
     return this.http.get<ServiceVehicleModel[]>(`${this.baseUrl}/vehicle_makes/${makeId}/vehicle_models`)
   }
 
-  calculateVehicleEmissions(vehicle: ServiceVehicleEstimateRequest): Observable<ServiceVehicleEstimate> {
+  calculateVehicleEmissions(vehicle: {distance_unit: string, distance_value: string, vehicle_model_id: string}): Observable<ServiceVehicleEstimate> {
     return this.http.post<ServiceVehicleEstimate>(`${this.baseUrl}/estimates`, {
       type: "vehicle",
       distance_unit: vehicle.distance_unit,
       distance_value: vehicle.distance_value,
       vehicle_model_id: vehicle.vehicle_model_id
+    })
+  }
+
+  calculateBillingEmissions(billing: { country: string,  electricity_value: number }): Observable<ServiceBillingEstimate> {
+    return this.http.post<ServiceBillingEstimate>(`${this.baseUrl}/estimates`, {
+      type: "electricity",
+      country: billing.country,
+      electricity_unit: 'mwh',
+      electricity_value: billing.electricity_value
     })
   }
 

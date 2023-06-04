@@ -1,1 +1,49 @@
-<p>billings-estimate-calculator works!</p>
+<div class="billings-estimate-form" [formGroup]="form">
+    <ng-container formArrayName="billings">
+        <ng-container *ngFor="let billing of billings.controls; let i = index">
+            <div class="billings-estimate-form-row" [formGroupName]="i">
+
+                <mat-form-field appearance="fill">
+                    <mat-select formControlName="country" placeholder="Nazione">
+                        <ng-container *ngFor="let country of countries">
+                          <mat-option [value]="country.id">{{country.name}}</mat-option>
+                        </ng-container>
+                    </mat-select>
+                </mat-form-field>
+
+
+                <mat-form-field appearance="fill">
+                  <input matInput
+                     formControlName="electricity_value"
+                     placeholder="Consumo elettrico">
+                </mat-form-field>
+
+
+                <button
+                  *ngIf=" isCalculatingEstimate().index !== i && form.get('billings')?.get(i.toString())?.get('emissions')?.value === null"
+                  mat-raised-button color="primary" (click)="onCalculateEstimate(i)">
+                    Calcola emissioni
+                </button>
+                <mat-spinner *ngIf="isCalculatingEstimate().index == i">
+                </mat-spinner>
+                <span
+                  *ngIf=" isCalculatingEstimate().index !== i && form.get('billings')?.get(i.toString())?.get('emissions')?.value">
+                  {{ form.get('billings')?.get(i.toString())?.get('emissions')?.value }}
+                </span>
+
+                <button mat-mini-fab (click)="onRemoveRow(i)">
+                  <mat-icon class="add-remove-btn">delete</mat-icon>
+                </button>
+
+              </div>
+        </ng-container>
+    </ng-container>
+
+
+    <button mat-mini-fab (click)="onAddRow()">
+      <mat-icon class="add-vehicle-btn">add</mat-icon>
+    </button>
+
+
+</div>
+

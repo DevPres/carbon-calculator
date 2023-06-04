@@ -3,7 +3,9 @@
     <mat-tab label="Veicoli">
         <app-vehicles-estimate-calculator [resetChanges$]="resetChanges$"  [estimate]="estimate$ | async"></app-vehicles-estimate-calculator>
     </mat-tab>
-    <mat-tab label="Bolletta">Bolletta</mat-tab>
+    <mat-tab label="Bolletta">
+      <app-billings-estimate-calculator [resetChanges$]="resetChanges$" [estimate]="estimate$ | async"></app-billings-estimate-calculator>
+    </mat-tab>
   </mat-tab-group>
   <mat-card-actions *ngIf="isUnsaved()">
     <button mat-raised-button color="primary" (click)="onSaveChanges()">Salva</button>
