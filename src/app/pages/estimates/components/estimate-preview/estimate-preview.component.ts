@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Store } from '@ngrx/store';
 import { estimateFeature } from '@pages/estimates/estimate.store';
@@ -18,4 +18,17 @@ export class EstimatePreviewComponent {
   private readonly store = inject(Store);
 
   readonly estimate = this.store.selectSignal(estimateFeature.selectSelectedEstimate);
+
+  vehiclesNumber = computed(() => {
+    let vehicles = this.estimate()?.vehiclesEstimate?.vehicles;
+    if (!vehicles) return 0;
+    return vehicles.filter(vehicle => vehicle.emissions > 0).length;
+  });
+
+  billsNumber = computed(() => {
+    let bills = this.estimate()?.billsEstimate?.bills
+    if (!bills) return 0;
+    return bills.filter(bills => bills.emissions > 0).length;
+  });
+
 }
