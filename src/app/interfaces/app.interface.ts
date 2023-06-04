@@ -14,6 +14,8 @@ export interface EstimateBase {
 
 export interface VehiclesEstimate extends EstimateBase {
   type: CalculatorEnum.vehicles;
+  totalVehicles: number;
+  totalDistanceKm: number;
   vehicles: VehicleEstimate[];
 }
 
