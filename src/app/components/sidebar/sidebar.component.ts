@@ -41,9 +41,9 @@ export class SidebarComponent {
   onAddEstimate(): void {
     const dialogRef = this.dialog.open(CreateEstimateDialogComponent);
 
-    dialogRef.afterClosed().subscribe(result => {
-      if(result) {
-        this.store.dispatch(AppActions.creatingEmptyEstimate())
+    dialogRef.afterClosed().subscribe(([close, name]) => {
+      if(close) {
+        this.store.dispatch(AppActions.creatingEmptyEstimate({ name }))
       }
     });
   }

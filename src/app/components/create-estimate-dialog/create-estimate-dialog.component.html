@@ -1,8 +1,10 @@
-<h1 mat-dialog-title>Crea una nuova stima!</h1>
+<h1 mat-dialog-title>Inserisci un nome per la stima:</h1>
 <div mat-dialog-content>
-  <p>Sei sicuro di voler creare una nuova stima? </p>
-  </div>
+  <mat-form-field appearance="outline">
+    <input matInput [formControl]="name" placeholder="Nome stima">
+  </mat-form-field>
+</div>
 <div mat-dialog-actions>
-  <button mat-button (click)="onNoClick()">Annulla</button>
-  <button mat-button (click)="onOkClick()" cdkFocusInitial>Ok</button>
+  <button mat-raised-button (click)="onNoClick()">Annulla</button>
+  <button mat-raised-button color="primary"(click)="onOkClick()" cdkFocusInitial>Ok</button>
 </div>
