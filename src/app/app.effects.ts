@@ -16,7 +16,7 @@ export const createEmptyEstimate = createEffect(
     return actions$.pipe(
       ofType(AppActions.creatingEmptyEstimate),
       map(() => {
-        return AppActions.addEstimate({
+        return AppActions.addingEstimate({
           id: generateUUID(),
           name: 'Nuova stima',
           emissions: 0,
@@ -28,7 +28,9 @@ export const createEmptyEstimate = createEffect(
         } as TotalEstimate)
       }),
       tap(({ id }) => {
-        router.navigate(['/estimates', id])
+        router.navigateByUrl('/', {skipLocationChange: true}).then(() => {
+          router.navigate(['/estimates', id]);
+        });
       })
     );
   },
