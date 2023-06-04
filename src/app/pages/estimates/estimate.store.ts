@@ -63,12 +63,12 @@ export const estimateReducer = createReducer(
       }
     }
   })),
-  on(EstimateActions.loadSelectedEstimate, (state, { id, name, emissions, vehiclesEstimate, billsEstimate  }) => ({
+  on(EstimateActions.loadSelectedEstimate, (state, { id, name, emissionsKg, vehiclesEstimate, billsEstimate  }) => ({
     ...state,
     selectedEstimate: {
       id,
       name,
-      emissions,
+      emissionsKg,
       vehiclesEstimate,
       billsEstimate
     },
@@ -90,6 +90,23 @@ export const estimateReducer = createReducer(
     },
     selectedEstimateUnsaved: true,
   })),
+  on(EstimateActions.syncBillsEstimate, EstimateActions.syncVehiclesEstimate, (state, action ) => {
+    let emissions = state.selectedEstimate?.emissionsKg || 0;
+
+    if('vehiclesEstimate' in action) {
+      emissions += action.vehiclesEstimate.totalEmissions;
+    }
+    if('billsEstimate' in action) {
+      emissions += action.billsEstimate.totalEmissions;
+    }
+    return ({
+      ...state,
+      selectedEstimate: {
+        ...state.selectedEstimate as TotalEstimate,
+        emissionsKg: emissions
+      }
+    })
+  }),
   on(EstimateActions.savingEstimate, (state) => ({
     ...state,
     selectedEstimateUnsaved: false
