@@ -5,9 +5,12 @@
       <mat-icon (click)="onCloseSidebar()">close</mat-icon>
     </div>
     <div class="sidebar-content-estimates-list">
-      <ng-container *ngFor="let estimate of estimates()">
-        <app-estimate-preview [estimate]="estimate"></app-estimate-preview>
-      </ng-container>
+      <mat-list>
+        <mat-divider></mat-divider>
+        <ng-container *ngFor="let estimate of estimates()">
+          <app-estimate-preview [selected]="estimate.id == selectedEstimateId()" [estimate]="estimate"></app-estimate-preview>
+        </ng-container>
+      </mat-list>
     </div>
   </div>
 
