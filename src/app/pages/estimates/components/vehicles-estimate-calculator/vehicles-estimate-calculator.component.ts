@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, Input, WritableSignal, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, DestroyRef, Input, WritableSignal, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CalculatorEnum, TotalEstimate, VehicleEstimate, VehiclesEstimate } from 'src/app/interfaces/app.interface';
 import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -70,6 +70,8 @@ export class VehiclesEstimateCalculatorComponent {
     private readonly store = inject(Store);
     private readonly apiService = inject(EstimatesApiService);
     private readonly destroyRef = inject(DestroyRef);
+    private readonly cd = inject(ChangeDetectorRef);
+
 
     private calculateEstimate$$ = new ReplaySubject<number>();
 
@@ -111,6 +113,7 @@ export class VehiclesEstimateCalculatorComponent {
         console.log('reset changes')
         this.createForm(this.initialData);
         this.syncEstimate();
+        this.cd.detectChanges()
       })
 
       this.vehicles.valueChanges.pipe(

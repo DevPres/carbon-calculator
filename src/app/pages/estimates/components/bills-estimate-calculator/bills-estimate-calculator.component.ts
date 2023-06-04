@@ -101,7 +101,6 @@ export class BillsEstimateCalculatorComponent {
       this.resetChanges$.pipe(
         takeUntilDestroyed(this.destroyRef),
       ).subscribe(() => {
-        console.log('reset changes')
         this.createForm(this.initialData)
         this.syncEstimate();
         this.cd.detectChanges()
