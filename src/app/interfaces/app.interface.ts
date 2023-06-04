@@ -2,7 +2,7 @@ export interface TotalEstimate {
   id: string;
   name: string;
   description?: string;
-  emissions: number;
+  emissionsKg: number;
   vehiclesEstimate: VehiclesEstimate;
   billsEstimate: BillsEstimate;
 };
