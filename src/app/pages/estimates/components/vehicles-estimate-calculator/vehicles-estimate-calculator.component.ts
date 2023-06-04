@@ -109,7 +109,8 @@ export class VehiclesEstimateCalculatorComponent {
 
       ).subscribe(() => {
         console.log('reset changes')
-        this.createForm(this.initialData)
+        this.createForm(this.initialData);
+        this.syncEstimate();
       })
 
       this.vehicles.valueChanges.pipe(

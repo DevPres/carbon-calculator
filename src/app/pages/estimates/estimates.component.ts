@@ -68,8 +68,8 @@ export class EstimatesComponent {
   }
 
   resetChanges() {
-    this.resetChanges$.next()
     this.store.dispatch(EstimateActions.resettingEstimate());
+    this.resetChanges$.next()
   }
 
 }

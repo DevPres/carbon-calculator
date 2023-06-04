@@ -92,9 +92,9 @@ export const estimateReducer = createReducer(
   })),
   on(EstimateActions.syncBillsEstimate, EstimateActions.syncVehiclesEstimate, (state, action ) => {
     let emissions = state.selectedEstimate?.emissionsKg || 0;
-
     if('vehiclesEstimate' in action) {
       emissions += action.vehiclesEstimate.totalEmissions;
+      console.log('emissions', emissions)
     }
     if('billsEstimate' in action) {
       emissions += action.billsEstimate.totalEmissions;
@@ -113,6 +113,10 @@ export const estimateReducer = createReducer(
   })),
   on(EstimateActions.resettingEstimate, (state) => ({
     ...state,
+    selectedEstimate: {
+      ...state.selectedEstimate as TotalEstimate,
+      emissionsKg: 0,
+    },
     selectedEstimateUnsaved: false,
   })),
 );

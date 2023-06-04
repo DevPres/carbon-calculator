@@ -103,6 +103,7 @@ export class BillsEstimateCalculatorComponent {
       ).subscribe(() => {
         console.log('reset changes')
         this.createForm(this.initialData)
+        this.syncEstimate();
         this.cd.detectChanges()
       })
 
@@ -125,7 +126,7 @@ export class BillsEstimateCalculatorComponent {
 
    private addRow(data: BillEstimate | null, emit = false): void {
       this.bills.push(new FormGroup({
-        country: new FormControl(""),
+        country: new FormControl(data?.country ||""),
         electricity_value: new FormControl(data?.electricity_value || 0),
         emissions: new FormControl(data?.emissions || null),
       }),{emitEvent: emit})
