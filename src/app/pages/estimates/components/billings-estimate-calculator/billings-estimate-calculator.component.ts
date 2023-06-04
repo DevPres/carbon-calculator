@@ -14,6 +14,7 @@ import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule } f
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { EstimateActions } from '@pages/estimates/estimate.store';
 import { MatButtonModule } from '@angular/material/button';
+import { COUNTRIES } from 'src/app/utils/countries.model';
 
 @Component({
   selector: 'app-billings-estimate-calculator',
@@ -68,7 +69,7 @@ export class BillingsEstimateCalculatorComponent {
 
     isCalculatingEstimate: WritableSignal<{ calculating: boolean, index: number | null }> = signal({calculating: false, index: null});
 
-    countries: {id: string, name: string}[] = [];
+    countries: {code: string, name: string}[] = COUNTRIES;
     initialData: BillingEstimate[] = [];
 
     ngOnInit(): void {
@@ -83,12 +84,12 @@ export class BillingsEstimateCalculatorComponent {
               let estimateKg = estimate.data.attributes.carbon_kg;
               this.form.get('billings')?.get(formIndex.toString())?.get('emissions')?.setValue(estimateKg);
             }),
-            catchError((err) => EMPTY)
-          )
-          finalize(() =>
-            setTimeout(() =>
-              this.isCalculatingEstimate.mutate(v => {v.calculating = false; v.index = null})
-            ,1000)
+            catchError((err) => EMPTY),
+            finalize(() =>
+              setTimeout(() =>
+                this.isCalculatingEstimate.mutate(v => {v.calculating = false; v.index = null})
+              ,1000)
+            )
           )
         })
       ).subscribe();

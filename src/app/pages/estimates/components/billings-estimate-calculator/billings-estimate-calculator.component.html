@@ -6,7 +6,7 @@
                 <mat-form-field appearance="fill">
                     <mat-select formControlName="country" placeholder="Nazione">
                         <ng-container *ngFor="let country of countries">
-                          <mat-option [value]="country.id">{{country.name}}</mat-option>
+                          <mat-option [value]="country.code">{{country.name}}</mat-option>
                         </ng-container>
                     </mat-select>
                 </mat-form-field>
@@ -14,8 +14,9 @@
 
                 <mat-form-field appearance="fill">
                   <input matInput
-                     formControlName="electricity_value"
-                     placeholder="Consumo elettrico">
+                    type="number"
+                    formControlName="electricity_value"
+                    placeholder="Consumo elettrico">
                 </mat-form-field>
 
 

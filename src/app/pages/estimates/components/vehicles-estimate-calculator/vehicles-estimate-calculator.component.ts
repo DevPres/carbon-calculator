@@ -55,6 +55,10 @@ export class VehiclesEstimateCalculatorComponent {
       return ({
         type: CalculatorEnum.vehicles,
         totalEmissions: this.totalEmissions,
+        totalVehicles: this.vehicles.value.length,
+        totalDistanceKm: this.vehicles.value.reduce((acc: number, vehicle: VehicleEstimate) => {
+          return acc + vehicle.distance_value;
+        }, 0),
         vehicles: this.vehicles.value
       })
     }
