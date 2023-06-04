@@ -22,8 +22,9 @@ export const AppActions = createActionGroup({
   events: {
     'Adding Estimate': props<TotalEstimate>(),
     'Removing Estimate': props<{ id: number }>(),
-    'Creating Empty Estimate': emptyProps(),
-  },
+    'Creating Empty Estimate': props<{ name: string }>(),
+    'Occuring Error': emptyProps(),
+  }
 });
 
 

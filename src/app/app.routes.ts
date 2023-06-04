@@ -4,10 +4,13 @@ import { provideState } from '@ngrx/store';
 import { provideEffects } from '@ngrx/effects';
 import * as EstimateFeatureEffects from '@pages/estimates/estimate.effect';
 import { EstimatesApiService } from '@pages/estimates/estimates.service';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
-  { path: 'home', loadChildren: () => import('@pages/home/').then(m => m.routes) },
+  { path: 'home',
+    loadChildren: () => import('@pages/home/').then(m => m.routes)
+  },
   {
     path: 'estimates',
     providers: [

@@ -32,7 +32,7 @@ export const loadVehicleMakes = createEffect(
           map((vehicleMakes: VehicleMake[]) => EstimateActions.loadedVehicleMakes({ makes: vehicleMakes })),
           retry(3),
           //HANDLE ERROR
-          catchError(() => EMPTY)
+          catchError(() => of(AppActions.occuringError()))
         )
       )
     );
@@ -65,7 +65,8 @@ export const loadVehicleModel = createEffect(
           map((vehicleModels: VehicleModel[]) => EstimateActions.loadedModelsByMake({ makeId, models: vehicleModels })),
           retry(3),
           //HANDLE ERROR
-          catchError(() => EMPTY)
+          catchError(() => of(AppActions.occuringError()))
+
         )
       )
     );

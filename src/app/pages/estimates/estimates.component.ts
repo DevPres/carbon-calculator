@@ -33,7 +33,6 @@ export class EstimatesComponent {
   private readonly untilDestroyed = untildestroyed();
 
   readonly estimate$: Observable<TotalEstimate | null> = this.store.select(selectEstimates).pipe(
-    tap(() => console.log('passo select' )),
     map(estimates => estimates.find(estimate => estimate.id === this.id) || null),
   );
 

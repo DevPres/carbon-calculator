@@ -1,5 +1,5 @@
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import { ApplicationConfig } from '@angular/core';
+import { ApplicationConfig, importProvidersFrom } from '@angular/core';
 import { provideRouter, withComponentInputBinding } from '@angular/router';
 import { routes } from './app.routes';
 import { provideStore } from '@ngrx/store';
@@ -10,6 +10,8 @@ import * as AppEffects from './app.effects';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { TokenInterceptor } from './interceptor/token.interceptor';
 import { provideRouterStore, routerReducer } from '@ngrx/router-store';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { HandleErrorService } from './services/handle-error.service';
 
 export const AppConfig: ApplicationConfig = {
     providers: [
@@ -20,6 +22,8 @@ export const AppConfig: ApplicationConfig = {
     provideStore({ appState: appReducer }),
     provideEffects(AppEffects),
     provideStoreDevtools(),
-    provideAnimations()
+    provideAnimations(),
+    importProvidersFrom(MatSnackBarModule),
+    HandleErrorService,
 ],
 };

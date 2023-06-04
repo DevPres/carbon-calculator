@@ -7,6 +7,7 @@ import { generateUUID } from './utils/function';
 import { Store } from '@ngrx/store';
 import { Router } from '@angular/router';
 import { EstimateActions } from '@pages/estimates/estimate.store';
+import { HandleErrorService } from './services/handle-error.service';
 
 export const createEmptyEstimate = createEffect(
   (
@@ -15,10 +16,10 @@ export const createEmptyEstimate = createEffect(
    ) => {
     return actions$.pipe(
       ofType(AppActions.creatingEmptyEstimate),
-      map(() => {
+      map(({name}) => {
         return AppActions.addingEstimate({
           id: generateUUID(),
-          name: 'Nuova stima',
+          name: name,
           emissionsKg: 0,
           vehiclesEstimate: {
             type: CalculatorEnum.vehicles,
@@ -45,6 +46,22 @@ export const createEmptyEstimate = createEffect(
   },
   { functional: true}
 );
+
+export const handleError = createEffect(
+  (
+    actions$ = inject(Actions),
+    handleErrorsService = inject(HandleErrorService),
+  ) => {
+    return actions$.pipe(
+      ofType(AppActions.occuringError),
+      tap(() => {
+        handleErrorsService.handleApiError();
+      })
+    )
+  },
+  { functional: true, dispatch: false }
+)
+
 
 
 
