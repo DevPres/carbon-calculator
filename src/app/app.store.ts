@@ -6,11 +6,15 @@ import { EstimateActions } from "@pages/estimates/estimate.store";
 
 export interface AppState {
   estimates: TotalEstimate[];
+  selectedEstimateId: string | null;
 }
 
 
 
-export const initialState: TotalEstimate[] = [];
+export const initialState: AppState = {
+  estimates : [],
+  selectedEstimateId: null,
+};
 
 
 export const AppActions = createActionGroup({
@@ -25,9 +29,10 @@ export const AppActions = createActionGroup({
 
 export const appReducer = createReducer(
   initialState,
-  on(AppActions.addingEstimate, (state, { id, name, description, emissionsKg, vehiclesEstimate, billsEstimate } ) =>
-    [
-      ...state,
+  on(AppActions.addingEstimate, (state, { id, name, description, emissionsKg, vehiclesEstimate, billsEstimate } ) =>({
+    ...state,
+    estimates: [
+      ...state.estimates,
       {
         id,
         name,
@@ -35,30 +40,46 @@ export const appReducer = createReducer(
         emissionsKg,
         vehiclesEstimate,
         billsEstimate
-      }
+      },
     ],
-  ),
-  on(EstimateActions.savingEstimate, (state, {id, name, description, emissionsKg, vehiclesEstimate, billsEstimate}) => {
-    const oldEstimate = state.find(estimate => estimate.id === id);
+  })),
+  on(EstimateActions.savingEstimate, (state, { id, name, description, emissionsKg, vehiclesEstimate, billsEstimate}) => {
+    const oldEstimate = state.estimates.find(estimate => estimate.id === id);
     const newEstimate = { id, name, description, emissionsKg, vehiclesEstimate, billsEstimate } as TotalEstimate;
     if (oldEstimate) {
-      return state.map(estimate => estimate.id === id ? newEstimate : estimate);
+      return ({
+        ...state,
+        estimates: state.estimates.map(estimate => estimate.id === id ? newEstimate : estimate),
+      })
     }
-    return [
+    return ({
       ...state,
-      newEstimate,
-    ];
+      estimates: [
+        ...state.estimates,
+        newEstimate,
+      ]
+    })
+
   }),
+  on(EstimateActions.loadSelectedEstimate, (state, { id }) => ({
+    ...state,
+    selectedEstimateId: id,
+  })),
 
 );
 
 
 
-export const selectApp = (state: AppState) => state;
+export const selectApp = (state: {appState: AppState}) => state.appState;
 
 export const selectEstimates = createSelector(
   selectApp,
   (state: AppState) => state.estimates
+);
+
+export const selectSelectedEstimateId = createSelector(
+  selectApp,
+  (state: AppState) => state.selectedEstimateId
 );
 
 

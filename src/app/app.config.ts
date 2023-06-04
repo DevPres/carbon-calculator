@@ -17,7 +17,7 @@ export const AppConfig: ApplicationConfig = {
     provideHttpClient(
       withInterceptors([TokenInterceptor])
     ),
-    provideStore({ estimates: appReducer }),
+    provideStore({ appState: appReducer }),
     provideEffects(AppEffects),
     provideStoreDevtools(),
     provideAnimations()
