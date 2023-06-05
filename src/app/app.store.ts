@@ -33,7 +33,6 @@ export const appReducer = createReducer(
   on(AppActions.addingEstimate, (state, { id, name, description, emissionsKg, vehiclesEstimate, billsEstimate } ) =>({
     ...state,
     estimates: [
-      ...state.estimates,
       {
         id,
         name,
@@ -42,6 +41,7 @@ export const appReducer = createReducer(
         vehiclesEstimate,
         billsEstimate
       },
+      ...state.estimates,
     ],
   })),
   on(EstimateActions.savingEstimate, (state, { id, name, description, emissionsKg, vehiclesEstimate, billsEstimate}) => {
